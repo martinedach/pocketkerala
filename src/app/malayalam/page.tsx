@@ -431,6 +431,15 @@ export default function MalayalamHome() {
             style={{ color: "inherit", textDecoration: "underline" }}
           >
             Frison
+          </a>{" "}
+          &amp;{" "}
+          <a
+            href="https://infinitech.today"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "inherit", textDecoration: "underline" }}
+          >
+            infinitech
           </a>
         </p>
         <p className="copyright-text">

@@ -1,47 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { CountdownSection } from "./components/CountdownSection";
+import { SiteFooter } from "./components/SiteFooter";
+import { SiteHeader } from "./components/SiteHeader";
 
 type SectionId = "about" | "goals" | "sponsors" | "coffee" | null;
-
 export default function Home() {
   const [openSection, setOpenSection] = useState<SectionId>("about");
-  const [timeLeft, setTimeLeft] = useState<{
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  } | null>(null);
-  const [countdownMessage, setCountdownMessage] = useState<string>("");
-
-  useEffect(() => {
-    const launchDate = new Date("Jan 2, 2026 18:30:00 GMT+0530").getTime();
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const distance = launchDate - now;
-
-      if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor(
-          (distance % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        setTimeLeft({ days, hours, minutes, seconds });
-        setCountdownMessage("");
-      } else {
-        clearInterval(interval);
-        setTimeLeft(null);
-        setCountdownMessage("WATCH OUR LATEST VIDEO BELOW!");
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleToggle = (section: SectionId) => {
     setOpenSection((current) => (current === section ? null : section));
@@ -52,24 +18,10 @@ export default function Home() {
 
   return (
     <>
-      <header className="kerala-header">
-        <a className="logo-link" href="/">
-          <img
-            src="/images/logo.jpg"
-            alt="PocketKerala logo"
-            className="logo"
-          />
-        </a>
-        <h1 className="sub-header-text">നമ്മുടെ കേരളം, നിങ്ങളുടെ കീശയിൽ</h1>
-      </header>
-
-      <section className="language-box-section">
-        <div className="language-switch">
-          <a className="malayalam-link-box" href="/malayalam">
-            മലയാളം വെബ്സൈറ്റിനായി ഇവിടെ ക്ലിക്ക് ചെയ്യുക
-          </a>
-        </div>
-      </section>
+      <SiteHeader
+        languageHref="/malayalam"
+        languageLabel="മലയാളം വെബ്സൈറ്റിനായി ഇവിടെ ക്ലിക്ക് ചെയ്യുക"
+      />
 
       <section className="about-box-section">
         <div className="about-nav-buttons">
@@ -311,53 +263,12 @@ export default function Home() {
       </section>
 
       <main className="kerala-main">
-        <section className="announcement-section">
-          <h2 className="milestone-title">
-            Thanks for helping us reach 200+ Subs!
-          </h2>
-
-          <div id="countdown-timer" className="countdown-container">
-            {timeLeft && (
-              <>
-                <div className="countdown-box">
-                  <div className="countdown-value">{timeLeft.days}</div>
-                  <div className="countdown-label">Days</div>
-                </div>
-                <div className="countdown-box">
-                  <div className="countdown-value">{timeLeft.hours}</div>
-                  <div className="countdown-label">Hours</div>
-                </div>
-                <div className="countdown-box">
-                  <div className="countdown-value">{timeLeft.minutes}</div>
-                  <div className="countdown-label">Mins</div>
-                </div>
-                <div className="countdown-box">
-                  <div className="countdown-value">{timeLeft.seconds}</div>
-                  <div className="countdown-label">Secs</div>
-                </div>
-              </>
-            )}
-          </div>
-          <div id="countdown-message" className="countdown-message">
-            {countdownMessage}
-          </div>
-
-          <div className="video-container">
-            <iframe
-              src="https://www.youtube.com/embed/duEQT4Wk8XM?origin=https://pocketkerala.in"
-              title="YouTube video player"
-              frameBorder={0}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-          </div>
-
-          <p>
-            Get ready to explore the beauty and spirit of Kerala right in your
-            pocket.
-          </p>
-        </section>
+        <CountdownSection
+          milestoneTitle="Thanks for helping us reach 200+ Subs!"
+          postLaunchMessage="WATCH OUR LATEST VIDEO BELOW!"
+          description="Get ready to explore the beauty and spirit of Kerala right in your pocket."
+          videoSrc="https://www.youtube.com/embed/duEQT4Wk8XM?origin=https://pocketkerala.in"
+        />
 
         <section className="partner-section">
           <p className="thanks-text">Special thanks to our Media Partner</p>
@@ -414,46 +325,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="kerala-footer">
-        <div className="contact-info">
-          <h4>Contact Us</h4>
-          <p>
-            EMAIL:{" "}
-            <a href="mailto:info@pocketkerala.in" className="link-gold">
-              info@pocketkerala.in
-            </a>
-          </p>
-          <p>
-            PHONE:{" "}
-            <a href="tel:+919895802679" className="link-gold">
-              +91-9895802679
-            </a>
-          </p>
-        </div>
-        <p className="powered-by">
-          Powered by{" "}
-          <a
-            href="https://www.instagram.com/anthonyfrison7/"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "inherit", textDecoration: "underline" }}
-          >
-            Frison
-          </a>{" "}
-          &amp;{" "}
-          <a
-            href="https://infinitech.today"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "inherit", textDecoration: "underline" }}
-          >
-            infinitech
-          </a>
-        </p>
-        <p className="copyright-text">
-          Copyright © 2026 . All Rights Reserved.
-        </p>
-      </footer>
+      <SiteFooter contactHeading="Contact Us" />
     </>
   );
 }

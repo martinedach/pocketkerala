@@ -7,7 +7,7 @@ import { SiteHeader } from "./components/SiteHeader";
 
 type SectionId = "about" | "goals" | "sponsors" | "coffee" | null;
 export default function Home() {
-  const [openSection, setOpenSection] = useState<SectionId>("about");
+  const [openSection, setOpenSection] = useState<SectionId>(null);
 
   const handleToggle = (section: SectionId) => {
     setOpenSection((current) => (current === section ? null : section));

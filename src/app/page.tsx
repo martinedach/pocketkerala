@@ -51,7 +51,7 @@ export default function Home() {
             className="about-nav-btn coffee-btn"
             onClick={() => handleToggle("coffee")}
           >
-            Get Us A Coffee
+            Get Us A Coffee ☕
           </button>
         </div>
 

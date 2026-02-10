@@ -1,4 +1,4 @@
-@import "tailwindcss";
+
 
 :root {
     --color-background-cream: #FFFDD0;
@@ -14,6 +14,7 @@
     --main-text: var(--color-text-dark);
     --card-bg: #ffffff;
     --secondary-card-bg: #f7f7f7;
+    --sidebar-bg: var(--color-green-deep);
     --border-color: #cccccc;
     --shadow-color: rgba(0, 0, 0, 0.1);
 }
@@ -26,51 +27,103 @@
     display: block;
 }
 
+
+
+/* functionality for system dark mode preference, respecting manual override */
 @media (prefers-color-scheme: dark) {
-    :root {
-        --color-background-cream: #1a1a1a;
-        --color-green-deep: #70d2c6;
-        --color-gold-accent: #FFEB3B;
-        --color-text-dark: #f0f0f0;
+    :root:not([data-theme="light"]) {
+        --color-background-cream: #000000;
+        --color-green-deep: #ffffff;
+        --color-gold-accent: #FFD700;
+        --color-text-dark: #ffffff;
         --color-red-danger: #ff5255;
         --color-bright-orange: #FF9800;
         --color-light-grey: #444444; 
         --color-dark-grey: #2a2a2a; 
         
-        --main-bg: var(--color-background-cream);
-        --main-text: var(--color-text-dark);
-        --card-bg: #212121;
-        --secondary-card-bg: #303030;
-        --border-color: #555555;
-        --shadow-color: rgba(255, 255, 255, 0.1);
+        --main-bg: #000000;
+        --main-text: #ffffff;
+        --card-bg: #111111;
+        --secondary-card-bg: #222222;
+        --sidebar-bg: #161616;
+        --border-color: #333333;
+        --shadow-color: rgba(255, 255, 255, 0.05);
     }
     
-    .founder-photo.light-mode-photo {
+    :root:not([data-theme="light"]) .founder-photo.light-mode-photo {
         display: none;
     }
-    .founder-photo.dark-mode-photo {
+    :root:not([data-theme="light"]) .founder-photo.dark-mode-photo {
         display: block;
     }
 
-    .partner-logo { filter: brightness(0.9); }
-    .about-nav-buttons .about-nav-btn { color: #000000; text-shadow: none; }
-    .language-box-section { background-color: var(--card-bg); }
-    .sub-header-text { text-shadow: 0 0 10px rgba(0, 0, 0, 1); }
+    :root:not([data-theme="light"]) .partner-logo { filter: brightness(0.9) invert(1); }
+    :root:not([data-theme="light"]) .about-nav-buttons .about-nav-btn { color: #000000; text-shadow: none; }
+    :root:not([data-theme="light"]) .language-box-section { background-color: var(--card-bg); }
+    :root:not([data-theme="light"]) .sub-header-text { text-shadow: 0 0 10px rgba(0, 0, 0, 1); }
 
-    .about-box-section {
+    :root:not([data-theme="light"]) .about-box-section {
         padding: 30px 20px 10px; 
-        background: linear-gradient(145deg, #1d1d1d, #000000); 
+        background: var(--card-bg); /* Removed gradient for cleaner black/white look */
         border-radius: 15px; 
-        box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.5); 
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); 
         max-width: 800px; 
         margin: -10px auto 40px auto; 
-        border: 1px solid rgba(255, 215, 0, 0.2); 
+        border: 1px solid var(--border-color);
     }
 
-    .partner-section { background: linear-gradient(135deg, #0A1931 0%, #152A50 100%); }
-    .supporter-logos a, .supporter-logo { background-color: var(--color-dark-grey); }
-    .copyright-text { color: rgba(255, 255, 255, 0.45); }
+    :root:not([data-theme="light"]) .partner-section { background: #080808; }
+    :root:not([data-theme="light"]) .supporter-logos a, 
+    :root:not([data-theme="light"]) .supporter-logo { background-color: #222222; }
+    :root:not([data-theme="light"]) .copyright-text { color: rgba(255, 255, 255, 0.45); }
 }
+
+/* Manual Dark Mode Override */
+:root[data-theme="dark"] {
+    --color-background-cream: #000000;
+    --color-green-deep: #ffffff;
+    --color-gold-accent: #FFD700;
+    --color-text-dark: #ffffff;
+    --color-red-danger: #ff5255;
+    --color-bright-orange: #FF9800;
+    --color-light-grey: #444444; 
+    --color-dark-grey: #2a2a2a; 
+    
+    --main-bg: #000000;
+    --main-text: #ffffff;
+    --card-bg: #111111;
+    --secondary-card-bg: #222222;
+    --sidebar-bg: #161616;
+    --border-color: #333333;
+    --shadow-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="dark"] .founder-photo.light-mode-photo {
+    display: none;
+}
+:root[data-theme="dark"] .founder-photo.dark-mode-photo {
+    display: block;
+}
+
+:root[data-theme="dark"] .partner-logo { filter: brightness(0.9) invert(1); }
+:root[data-theme="dark"] .about-nav-buttons .about-nav-btn { color: #000000; text-shadow: none; }
+:root[data-theme="dark"] .language-box-section { background-color: var(--card-bg); }
+:root[data-theme="dark"] .sub-header-text { text-shadow: 0 0 10px rgba(0, 0, 0, 1); }
+
+:root[data-theme="dark"] .about-box-section {
+    padding: 30px 20px 10px; 
+    background: var(--card-bg);
+    border-radius: 15px; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); 
+    max-width: 800px; 
+    margin: -10px auto 40px auto; 
+    border: 1px solid var(--border-color);
+}
+
+:root[data-theme="dark"] .partner-section { background: #080808; }
+:root[data-theme="dark"] .supporter-logos a, 
+:root[data-theme="dark"] .supporter-logo { background-color: #222222; }
+:root[data-theme="dark"] .copyright-text { color: rgba(255, 255, 255, 0.45); }
 
 * { box-sizing: border-box; }
 
@@ -485,103 +538,18 @@ body {
     padding: 0;
     background: var(--main-bg);
 }
+/* Note: Sidebar styles removed in favor of Tailwind in AdminShell.tsx */
 
-.admin-layout {
-    display: flex;
-    min-height: 100vh;
-}
-
-.admin-sidenav {
-    width: 260px;
-    background-color: var(--color-green-deep);
-    color: #ffffff;
-    padding: 24px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: 0 4px 16px var(--shadow-color);
-}
-
-.admin-brand {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 24px;
-}
-
-.admin-brand-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: 1.1;
-}
-
-.admin-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.admin-nav-button {
-    width: 100%;
-    text-align: left;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.admin-nav-button:hover {
-    background-color: rgba(255, 215, 0, 0.18);
-    transform: translateY(-1px);
-}
-
-.admin-nav-button.active {
-    background-color: rgba(255, 215, 0, 0.28);
-}
-
-.admin-sidenav-footer {
-    margin-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 0.85rem;
-}
-
-.admin-user-email {
-    opacity: 0.85;
-    word-break: break-all;
-}
-
-.admin-signout-button {
-    align-self: flex-start;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    font-size: 0.85rem;
-}
 
 .admin-main {
     flex: 1;
-    padding: 32px 32px 40px;
+    padding: 20px;
     background-color: var(--main-bg);
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
 }
 
 .admin-content-card {
-    max-width: 960px;
     width: 100%;
     /* Let inner cards control their own look */
     background-color: transparent;

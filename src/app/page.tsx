@@ -1,13 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CountdownSection } from "./components/CountdownSection";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import { supabase } from "@/lib/supabaseClient";
+
+type Sponsor = {
+  id: number;
+  name: string;
+  logo_url: string;
+  website_url: string | null;
+  display_order: number;
+};
 
 type SectionId = "about" | "goals" | "sponsors" | "coffee" | null;
 export default function Home() {
   const [openSection, setOpenSection] = useState<SectionId>(null);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [loadingSponsors, setLoadingSponsors] = useState(true);
+
+  useEffect(() => {
+    const fetchSponsors = async () => {
+      const { data } = await supabase
+        .from("sponsors")
+        .select("*")
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      
+      if (data) setSponsors(data);
+      setLoadingSponsors(false);
+    };
+    fetchSponsors();
+  }, []);
 
   const handleToggle = (section: SectionId) => {
     setOpenSection((current) => (current === section ? null : section));
@@ -180,47 +205,30 @@ export default function Home() {
           <div className="content-wrapper">
             <h3>Sponsors &amp; Supporters</h3>
             <div className="supporter-logos">
-              <a
-                href="https://www.facebook.com/smartpixmediaofficial"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src="/images/spm_icon.png"
-                  alt="SmartPix"
-                  className="supporter-logo"
-                />
-              </a>
-              <a
-                href="https://kappo.in"
-                target="_blank"
-                rel="noreferrer"
-                className="logo-card-black"
-              >
-                <img
-                  src="/images/kappo1.png"
-                  alt="Kappo"
-                  className="supporter-logo kappo-logo"
-                />
-              </a>
-              <a href="#" target="_blank" rel="noreferrer">
-                <img
-                  src="/images/heritage.png"
-                  alt="Heritage Record Room"
-                  className="supporter-logo heritage-logo"
-                />
-              </a>
-              <a
-                href="https://www.instagram.com/cubalibre.in/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src="/images/cuba.jpg"
-                  alt="Cuba Libre"
-                  className="supporter-logo cuba-logo"
-                />
-              </a>
+              {loadingSponsors ? (
+                 <div className="col-span-full text-center opacity-50 text-sm py-4">Loading partners...</div>
+              ) : sponsors.length > 0 ? (
+                sponsors.map((sponsor) => (
+                  <a
+                    key={sponsor.id}
+                    href={sponsor.website_url || "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block transition-transform hover:scale-105"
+                  >
+                    <img
+                      src={sponsor.logo_url}
+                      alt={sponsor.name}
+                      className="supporter-logo"
+                      style={{ objectFit: 'contain', backgroundColor: 'transparent' }}
+                    />
+                  </a>
+                ))
+              ) : (
+                <div className="text-center opacity-50 text-sm py-4 w-full">
+                  Running on Supabase
+                </div>
+              )}
             </div>
             <p
               className="secondary-bio-text"

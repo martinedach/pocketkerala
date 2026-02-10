@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     "Pocket Kerala - Our Kerala in Your Pocket | Culture & Stories from Kerala",
   description:
     "Explore the heart of Kerala with PocketKerala! Find authentic travel stories, cultural insights, and support local businesses.",
+  icons: {
+    icon: "/Favicon.png",
+  },
 };
 
 export default function RootLayout({

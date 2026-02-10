@@ -83,9 +83,9 @@ export function AdminShell({ email, children }: AdminShellProps) {
   };
 
   return (
-    <main className="min-h-screen bg-[var(--main-bg)] flex flex-col md:flex-row font-sans">
+    <main className="h-screen overflow-hidden bg-[var(--main-bg)] flex flex-col md:flex-row font-sans">
       {/* Sidebar */}
-      <aside className="w-full md:w-72 bg-[var(--sidebar-bg)] text-white flex flex-col shadow-2xl z-10 relative overflow-hidden">
+      <aside className="w-full md:w-72 bg-[var(--sidebar-bg)] text-white flex flex-col shadow-2xl z-10 relative h-full flex-shrink-0">
         {/* Decorative background accent */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
         

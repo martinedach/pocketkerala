@@ -294,9 +294,16 @@ export default function MalayalamHome() {
           <div className="content-wrapper">
             <h3>ഞങ്ങളെ പിന്തുണക്കൂ</h3>
             <p className="secondary-bio-text">
-              ഞങ്ങളുടെ പ്രവർത്തനം നിങ്ങൾക്ക് ഇഷ്ടപ്പെട്ടെങ്കിൽ, ഒരു കാപ്പി വാങ്ങി
-              നൽകി ഞങ്ങളെ സഹായിക്കാം.{" "}
-              <span className="coffee-link-soon">(ലിങ്ക് ഉടൻ വരുന്നു)</span>
+              ഞങ്ങളുടെ പ്രവർത്തനം നിങ്ങൾക്ക് ഇഷ്ടപ്പെട്ടെങ്കിൽ,{" "}
+              <a
+                href="https://www.buymeacoffee.com/pocketkerala"
+                target="_blank"
+                rel="noreferrer"
+                className="link-gold"
+              >
+                Buy Me a Coffee
+              </a>{" "}
+              വഴി ഒരു കാപ്പി വാങ്ങി നൽകി ഞങ്ങളെ സഹായിക്കാം.
             </p>
           </div>
         </div>

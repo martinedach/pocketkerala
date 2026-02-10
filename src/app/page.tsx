@@ -291,8 +291,16 @@ export default function Home() {
           <div className="content-wrapper">
             <h3>Support Our Work</h3>
             <p className="secondary-bio-text">
-              If you love what we do, you can support us by buying a coffee.{" "}
-              <span className="coffee-link-soon">(Link coming soon)</span>
+              If you love what we do, you can support us by buying a coffee on{" "}
+              <a
+                href="https://www.buymeacoffee.com/pocketkerala"
+                target="_blank"
+                rel="noreferrer"
+                className="link-gold"
+              >
+                Buy Me a Coffee
+              </a>
+              .
             </p>
           </div>
         </div>

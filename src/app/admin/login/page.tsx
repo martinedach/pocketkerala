@@ -32,20 +32,39 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="kerala-main" style={{ maxWidth: 480 }}>
-      <section className="announcement-section">
-        <h2 className="milestone-title">Admin login</h2>
+    <main
+      className="kerala-main"
+      style={{
+        maxWidth: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "80vh",
+      }}
+    >
+      <section
+        className="announcement-section"
+        style={{ maxWidth: 420, width: "100%" }}
+      >
+        <h2 className="milestone-title">Pocket Kerala admin</h2>
         <p className="secondary-bio-text">
-          Sign in with your Pocket Kerala admin email and password.
+          Sign in with your admin email and password.
         </p>
 
-        <form onSubmit={handleSubmit} style={{ textAlign: "left", marginTop: 20 }}>
-          <label className="secondary-bio-text" style={{ display: "block", marginBottom: 8 }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ textAlign: "left", marginTop: 20 }}
+        >
+          <label
+            className="secondary-bio-text"
+            style={{ display: "block", marginBottom: 8 }}
+          >
             Email
           </label>
           <input
             type="email"
             required
+            autoComplete="username"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             style={{
@@ -57,12 +76,16 @@ export default function AdminLoginPage() {
             }}
           />
 
-          <label className="secondary-bio-text" style={{ display: "block", marginBottom: 8 }}>
+          <label
+            className="secondary-bio-text"
+            style={{ display: "block", marginBottom: 8 }}
+          >
             Password
           </label>
           <input
             type="password"
             required
+            autoComplete="current-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             style={{
@@ -87,7 +110,7 @@ export default function AdminLoginPage() {
             type="submit"
             disabled={submitting}
             className="about-nav-btn"
-            style={{ padding: "8px 18px" }}
+            style={{ padding: "8px 18px", width: "100%", marginTop: 4 }}
           >
             {submitting ? "Signing in..." : "Sign in"}
           </button>

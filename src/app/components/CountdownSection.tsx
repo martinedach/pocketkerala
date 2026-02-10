@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 type TimeLeft = {
   days: number;
@@ -22,6 +23,7 @@ export function CountdownSection({
   description,
   videoSrc,
 }: CountdownSectionProps) {
+  const [videoUrl, setVideoUrl] = useState(videoSrc);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(null);
   const [countdownMessage, setCountdownMessage] = useState("");
 
@@ -53,6 +55,28 @@ export function CountdownSection({
 
     return () => clearInterval(interval);
   }, [postLaunchMessage]);
+
+  useEffect(() => {
+    const loadVideoUrl = async () => {
+      const { data, error } = await supabase
+        .from("homepage_settings")
+        .select("video_url")
+        .eq("id", "default")
+        .maybeSingle();
+
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.warn("Failed to load homepage_settings.video_url", error);
+        return;
+      }
+
+      if (data?.video_url) {
+        setVideoUrl(data.video_url);
+      }
+    };
+
+    loadVideoUrl();
+  }, [videoSrc]);
 
   return (
     <section className="announcement-section">
@@ -86,7 +110,7 @@ export function CountdownSection({
 
       <div className="video-container">
         <iframe
-          src={videoSrc}
+          src={videoUrl}
           title="YouTube video player"
           frameBorder={0}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

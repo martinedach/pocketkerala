@@ -1,0 +1,24 @@
+---
+description: Planning, tracking, and versioning conventions for PocketKerala
+alwaysApply: true
+---
+
+## Planning and tracking
+
+- All **product planning, roadmaps, and task tracking** for PocketKerala live in **Linear**, not in this repo.
+- Use **Linear projects, cycles, and issues** as the single source of truth for what to work on and current status.
+- Keep GitHub issues minimal and code-focused (if used at all); they should link back to the corresponding Linear item when relevant.
+
+## GitHub usage
+
+- This GitHub repository is the **canonical source of code** for PocketKerala.
+- Avoid duplicating planning documents here, except for high‑level README docs or architecture notes.
+
+## Version control conventions
+
+- Use **semantic-style versioning** for releases when tagging (MAJOR.MINOR.PATCH):
+  - Bump **PATCH** for backwards-compatible bug fixes.
+  - Bump **MINOR** for backwards-compatible feature additions or UX improvements.
+  - Bump **MAJOR** for breaking changes or significant rewrites.
+- Keep the `main` branch in a **deployable state**; do work in feature branches and merge via pull requests with clear, descriptive titles.
+

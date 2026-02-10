@@ -279,8 +279,11 @@ export default function MalayalamHome() {
               ഞങ്ങളുടെ മീഡിയ പാർട്ണറായ സ്മാർട്ട്‌പിക്‌സ് മീഡിയയ്ക്കും ഞങ്ങളെ
               പിന്തുണയ്ക്കുന്നവർക്കും നന്ദി.{" "}
               <strong className="sponsor-announcement">
-                സ്പോൺസർഷിപ്പ് അവസരങ്ങളെക്കുറിച്ചുള്ള വിവരങ്ങൾ ഉടൻ
-                അറിയിക്കുന്നതാണ്
+                സ്പോൺസർഷിപ്പ് താൽപര്യമുണ്ടോ?{" "}
+                <a href="/malayalam/sponsorship" className="link-gold">
+                  വിശദാംശങ്ങൾ ഇവിടെ കാണുക
+                </a>
+                .
               </strong>
             </p>
           </div>

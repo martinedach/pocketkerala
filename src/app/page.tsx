@@ -277,7 +277,11 @@ export default function Home() {
               We are grateful for the support of our media partner, SmartPix
               Media, and all our loyal followers who make this journey possible.{" "}
               <strong className="sponsor-announcement">
-                DETAILS ON SPONSORSHIPS OPPORTUNITIES WILL BE ANNOUNCED SOON
+                Interested in sponsoring Pocket Kerala?{" "}
+                <a href="/sponsorship" className="link-gold">
+                  View sponsorship options
+                </a>
+                .
               </strong>
             </p>
           </div>

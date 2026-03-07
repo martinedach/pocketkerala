@@ -5,13 +5,13 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 
 const MOCK_DESIGNS = [
-  { id: "design-1", name: "Pocket Kerala Logo", description: "Classic logo print", image: "/images/logo.jpg" },
-  { id: "design-2", name: "Kerala Map", description: "Minimal map outline", image: "/images/alleppy_gemini.png" },
-  { id: "design-3", name: "നമ്മുടെ കേരളം", description: "Malayalam script", image: "/images/heritage.png" },
+  { id: "design-1", name: "Green", description: "Green design", image: "/images/green.PNG" },
+  { id: "design-2", name: "Pink", description: "Pink design", image: "/images/pink.PNG" },
+  { id: "design-3", name: "Yellow", description: "Yellow design", image: "/images/yellow.PNG" },
 ];
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
-const PRICE = 599;
+const PRICE = 899;
 
 export default function ShopPage() {
   const [design, setDesign] = useState<string>("");
@@ -26,6 +26,7 @@ export default function ShopPage() {
   const [pincode, setPincode] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showSizeModal, setShowSizeModal] = useState(false);
 
   const selectedDesign = MOCK_DESIGNS.find((d) => d.id === design);
   const subtotal = PRICE * quantity;
@@ -149,20 +150,69 @@ export default function ShopPage() {
 
                 <div className="shop-variant">
                   <label className="shop-variant-label">Size</label>
-                  <div className="shop-size-grid">
-                    {SIZES.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setSize(s)}
-                        className={`shop-size-btn ${size === s ? "shop-size-btn-active" : ""}`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                  <a href="#" className="shop-size-chart">Size guide</a>
+                  <button
+                    type="button"
+                    onClick={() => setShowSizeModal(true)}
+                    className="shop-size-trigger"
+                  >
+                    {size ? `Size: ${size}` : "Select size"}
+                  </button>
                 </div>
+
+                {showSizeModal && (
+                  <div className="shop-modal-overlay" onClick={() => setShowSizeModal(false)}>
+                    <div className="shop-modal" onClick={(e) => e.stopPropagation()}>
+                      <div className="shop-modal-header">
+                        <h3 className="shop-modal-title">Select size</h3>
+                        <button
+                          type="button"
+                          className="shop-modal-close"
+                          onClick={() => setShowSizeModal(false)}
+                          aria-label="Close"
+                        >
+                          x
+                        </button>
+                      </div>
+                      <div className="shop-modal-body">
+                        <div className="shop-size-grid shop-size-grid-modal">
+                          {SIZES.map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => {
+                                setSize(s);
+                                setShowSizeModal(false);
+                              }}
+                              className={`shop-size-btn ${size === s ? "shop-size-btn-active" : ""}`}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="shop-size-chart-table">
+                          <h4>Size guide (inches)</h4>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Size</th>
+                                <th>Chest</th>
+                                <th>Length</th>
+                                <th>Shoulder</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr><td>S</td><td>36</td><td>26</td><td>16</td></tr>
+                              <tr><td>M</td><td>38</td><td>27</td><td>17</td></tr>
+                              <tr><td>L</td><td>40</td><td>28</td><td>18</td></tr>
+                              <tr><td>XL</td><td>42</td><td>29</td><td>19</td></tr>
+                              <tr><td>XXL</td><td>44</td><td>30</td><td>20</td></tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="shop-variant">
                   <label className="shop-variant-label">Quantity</label>
@@ -316,7 +366,7 @@ export default function ShopPage() {
                     <span>Rs {subtotal}</span>
                   </div>
                   <button type="submit" className="shop-btn shop-btn-primary shop-btn-full">
-                    Place order (mock)
+                    Place order
                   </button>
                 </div>
               </form>

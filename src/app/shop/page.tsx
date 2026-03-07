@@ -26,7 +26,7 @@ export default function ShopPage() {
   const [pincode, setPincode] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [showSizeModal, setShowSizeModal] = useState(false);
+  const [showSizeChartModal, setShowSizeChartModal] = useState(false);
 
   const selectedDesign = MOCK_DESIGNS.find((d) => d.id === design);
   const subtotal = PRICE * quantity;
@@ -150,47 +150,44 @@ export default function ShopPage() {
 
                 <div className="shop-variant">
                   <label className="shop-variant-label">Size</label>
+                  <div className="shop-size-grid">
+                    {SIZES.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setSize(s)}
+                        className={`shop-size-btn ${size === s ? "shop-size-btn-active" : ""}`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setShowSizeModal(true)}
-                    className="shop-size-trigger"
+                    onClick={() => setShowSizeChartModal(true)}
+                    className="shop-size-chart"
                   >
-                    {size ? `Size: ${size}` : "Select size"}
+                    Size guide
                   </button>
                 </div>
 
-                {showSizeModal && (
-                  <div className="shop-modal-overlay" onClick={() => setShowSizeModal(false)}>
+                {showSizeChartModal && (
+                  <div className="shop-modal-overlay" onClick={() => setShowSizeChartModal(false)}>
                     <div className="shop-modal" onClick={(e) => e.stopPropagation()}>
                       <div className="shop-modal-header">
-                        <h3 className="shop-modal-title">Select size</h3>
+                        <h3 className="shop-modal-title">Size guide</h3>
                         <button
                           type="button"
                           className="shop-modal-close"
-                          onClick={() => setShowSizeModal(false)}
+                          onClick={() => setShowSizeChartModal(false)}
                           aria-label="Close"
                         >
                           x
                         </button>
                       </div>
                       <div className="shop-modal-body">
-                        <div className="shop-size-grid shop-size-grid-modal">
-                          {SIZES.map((s) => (
-                            <button
-                              key={s}
-                              type="button"
-                              onClick={() => {
-                                setSize(s);
-                                setShowSizeModal(false);
-                              }}
-                              className={`shop-size-btn ${size === s ? "shop-size-btn-active" : ""}`}
-                            >
-                              {s}
-                            </button>
-                          ))}
-                        </div>
                         <div className="shop-size-chart-table">
-                          <h4>Size guide (inches)</h4>
+                          <h4>Measurements (inches)</h4>
                           <table>
                             <thead>
                               <tr>

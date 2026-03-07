@@ -32,10 +32,10 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[var(--main-bg)] px-4 py-12">
+    <main className="min-h-screen flex items-center justify-center bg-[var(--main-bg)] px-4 py-8 sm:py-12">
       <div className="w-full max-w-md">
         <div className="bg-[var(--card-bg)] rounded-2xl shadow-xl border border-[var(--border-color)] overflow-hidden">
-          <div className="px-8 pt-10 pb-6 border-b border-[var(--border-color)]">
+          <div className="px-5 sm:px-8 pt-8 sm:pt-10 pb-5 sm:pb-6 border-b border-[var(--border-color)]">
             <div className="flex items-center justify-center gap-3 mb-4">
               <img
                 src="/images/logo.jpg"
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-5">
             <div>
               <label
                 htmlFor="admin-email"

@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
           </a>
         </div>
 
-        <div className="admin-card p-6">
+        <div className="admin-card p-4 sm:p-6">
           <h3 className="font-semibold text-[var(--main-text)] mb-2">Quick start</h3>
           <p className="text-sm text-[var(--main-text)] opacity-80">
             Use the navigation menu to access Landing Settings or Sponsors. Changes are saved to the database and reflected on the public site immediately.

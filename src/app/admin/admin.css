@@ -84,13 +84,23 @@
 }
 
 .admin-card-header {
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border-color);
 }
+@media (min-width: 640px) {
+  .admin-card-header {
+    padding: 1.25rem 1.5rem;
+  }
+}
 .admin-card-header h3 {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--color-green-deep);
+}
+@media (min-width: 640px) {
+  .admin-card-header h3 {
+    font-size: 1.125rem;
+  }
 }
 .admin-card-header p {
   font-size: 0.8125rem;
@@ -100,10 +110,15 @@
 }
 
 .admin-page-title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-green-deep);
   margin-bottom: 0.25rem;
+}
+@media (min-width: 640px) {
+  .admin-page-title {
+    font-size: 1.75rem;
+  }
 }
 .admin-page-subtitle {
   font-size: 1rem;

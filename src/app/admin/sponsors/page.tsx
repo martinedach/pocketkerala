@@ -172,7 +172,7 @@ export default function AdminSponsorsPage() {
             <h3>Add New Sponsor</h3>
             <p>Upload a logo and provide partner details.</p>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
@@ -238,9 +238,9 @@ export default function AdminSponsorsPage() {
           ) : (
             <div className="divide-y divide-[var(--border-color)]">
               {sponsors.map((sponsor) => (
-                <div key={sponsor.id} className="px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-[var(--secondary-card-bg)] transition-colors group gap-4">
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-16 h-16 shrink-0 relative bg-white/5 rounded-md flex items-center justify-center p-2 overflow-hidden border border-[var(--border-color)]">
+                <div key={sponsor.id} className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-[var(--secondary-card-bg)] transition-colors group gap-4">
+                  <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 relative bg-white/5 rounded-md flex items-center justify-center p-2 overflow-hidden border border-[var(--border-color)]">
                       <img 
                         src={sponsor.logo_url} 
                         alt={sponsor.name}
@@ -256,7 +256,7 @@ export default function AdminSponsorsPage() {
                           rel="noreferrer"
                           className="text-sm opacity-60 hover:text-[var(--color-gold-accent)] hover:underline flex items-center gap-1 truncate w-full"
                         >
-                          <span className="truncate max-w-[200px]">{sponsor.website_url}</span>
+                          <span className="truncate max-w-[140px] sm:max-w-[200px]">{sponsor.website_url}</span>
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                         </a>
                       )}

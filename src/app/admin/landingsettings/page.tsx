@@ -308,7 +308,7 @@ export default function AdminHomepageSettingsPage() {
               <h3>Add Featured Video</h3>
               <p>Paste a YouTube URL to get started.</p>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
@@ -342,7 +342,7 @@ export default function AdminHomepageSettingsPage() {
               <h3>Channel Stats</h3>
               <p>Stats from the channel of the featured video.</p>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {channelLoading && (
                 <div className="flex items-center gap-3 text-sm text-[var(--main-text)] opacity-70">
                   <span className="animate-pulse">Loading channel data...</span>
@@ -420,7 +420,7 @@ export default function AdminHomepageSettingsPage() {
               <h3>Channel Videos</h3>
               <p>All videos from the featured video&apos;s channel. Use any as the featured video.</p>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {channelVideosLoading && (
                 <div className="flex items-center gap-3 text-sm text-[var(--main-text)] opacity-70">
                   <span className="animate-pulse">Loading channel videos...</span>
@@ -440,7 +440,7 @@ export default function AdminHomepageSettingsPage() {
                         href={v.embedUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 relative w-40 aspect-video rounded-lg overflow-hidden border border-[var(--border-color)] bg-[var(--secondary-card-bg)]"
+                        className="flex-shrink-0 relative w-32 sm:w-40 aspect-video rounded-lg overflow-hidden border border-[var(--border-color)] bg-[var(--secondary-card-bg)]"
                       >
                         <img
                           src={v.thumbnail}
@@ -541,7 +541,7 @@ export default function AdminHomepageSettingsPage() {
                       href={item.video_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-shrink-0 w-40 h-[72px] rounded-lg overflow-hidden border border-[var(--border-color)] hover:opacity-90 transition-opacity bg-[var(--secondary-card-bg)]"
+                      className="flex-shrink-0 w-32 sm:w-40 h-[72px] rounded-lg overflow-hidden border border-[var(--border-color)] hover:opacity-90 transition-opacity bg-[var(--secondary-card-bg)]"
                       title="Open video"
                     >
                       <img
@@ -602,13 +602,13 @@ export default function AdminHomepageSettingsPage() {
       </div>
 
       {deleteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="admin-card max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="admin-card max-w-md w-full p-4 sm:p-6 shadow-2xl my-auto">
             <h3 className="text-lg font-semibold text-[var(--main-text)] mb-2">Confirm deletion</h3>
             <p className="text-sm text-[var(--main-text)] opacity-80 mb-6">
               Are you sure you want to delete this history item? This action cannot be undone.
             </p>
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
               <button onClick={cancelDelete} className="admin-btn-secondary">
                 Cancel
               </button>

@@ -142,7 +142,6 @@ export default function ShopPage() {
                         <span className="shop-design-btn-img">
                           <img src={d.image} alt={d.name} />
                         </span>
-                        <span className="shop-design-btn-name">{d.name}</span>
                       </button>
                     ))}
                   </div>

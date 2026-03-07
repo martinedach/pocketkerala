@@ -1,9 +1,20 @@
 type SiteHeaderProps = {
   languageHref: string;
   languageLabel: string;
+  variant?: "default" | "compact";
 };
 
-export function SiteHeader({ languageHref, languageLabel }: SiteHeaderProps) {
+export function SiteHeader({ languageHref, languageLabel, variant = "default" }: SiteHeaderProps) {
+  if (variant === "compact") {
+    return (
+      <header className="site-header-compact">
+        <a className="site-header-compact-logo" href="/">
+          <img src="/images/logo.jpg" alt="Pocket Kerala" />
+        </a>
+      </header>
+    );
+  }
+
   return (
     <>
       <header className="kerala-header">

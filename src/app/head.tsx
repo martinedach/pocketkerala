@@ -10,8 +10,8 @@ export default function Head() {
       <meta name="HandheldFriendly" content="True" />
       <meta name="theme-color" content="#1a1a1a" />
 
-      <link rel="icon" type="image/png" href="/images/Favicon.png" />
-      <link rel="apple-touch-icon" href="/images/Favicon.png" />
+      <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
+      <link rel="apple-touch-icon" href="/images/logo.jpg" />
 
       <title>
         Pocket Kerala - Our Kerala in Your Pocket | Culture &amp; Stories from

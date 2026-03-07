@@ -753,7 +753,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 32px;
-  max-width: 560px;
+  width: 100%;
   opacity: 0.6;
   transition: opacity 0.3s;
 }
@@ -803,8 +803,8 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
-  background: var(--card-bg);
-  color: var(--main-text);
+  background: #ffffff !important;
+  color: #333333 !important;
 }
 
 .shop-checkout-summary {

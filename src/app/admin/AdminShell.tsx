@@ -68,10 +68,10 @@ export function AdminShell({ email, children }: AdminShellProps) {
       <button
         type="button"
         onClick={() => navigate(path)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 border-l-4 ${
+        className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium rounded-lg mx-2 transition-all duration-200 ${
           isActive
-            ? "bg-white/10 border-[var(--color-gold-accent)] font-bold text-white shadow-lg"
-            : "border-transparent hover:bg-white/5 text-gray-100 hover:text-white"
+            ? "bg-white/15 text-white border-l-2 border-[var(--color-gold-accent)] -ml-0.5 pl-[18px]"
+            : "text-white/80 hover:bg-white/8 hover:text-white border-l-2 border-transparent"
         }`}
       >
         <span className={`${isActive ? "text-[var(--color-gold-accent)]" : "opacity-80"}`}>
@@ -85,31 +85,24 @@ export function AdminShell({ email, children }: AdminShellProps) {
   return (
     <main className="h-screen overflow-hidden bg-[var(--main-bg)] flex flex-col md:flex-row font-sans">
       {/* Sidebar */}
-      <aside className="w-full md:w-72 bg-[var(--sidebar-bg)] text-white flex flex-col shadow-2xl z-10 relative h-full flex-shrink-0">
-        {/* Decorative background accent */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-        
-        {/* Brand Header */}
-        <div className="p-6 flex items-center gap-4 relative z-10">
-          <div className="relative">
-             <div className="absolute inset-0 rounded-full bg-[var(--color-gold-accent)] blur-sm opacity-50"></div>
-             <img
-              src="/images/logo.jpg"
-              alt="Pocket Kerala logo"
-              className="relative w-12 h-12 rounded-full border-2 border-[var(--color-gold-accent)] object-cover shadow-md"
-            />
-          </div>
-          <div className="flex flex-row items-baseline gap-1.5 leading-tight">
-            <span className="font-bold text-xl tracking-wide text-white">Pocket</span>
-            <span className="font-serif italic text-xl text-[var(--color-gold-accent)]">Kerala</span>
+      <aside className="w-full md:w-64 lg:w-72 bg-[var(--sidebar-bg)] text-white flex flex-col shadow-xl z-10 flex-shrink-0 overflow-y-auto">
+        <div className="p-5 flex items-center gap-3 border-b border-white/10">
+          <img
+            src="/images/logo.jpg"
+            alt="Pocket Kerala"
+            className="w-10 h-10 rounded-full border-2 border-[var(--color-gold-accent)] object-cover flex-shrink-0"
+          />
+          <div>
+            <span className="font-semibold text-white text-sm tracking-tight">Pocket</span>
+            <span className="font-serif italic text-[var(--color-gold-accent)] text-sm ml-0.5">Kerala</span>
+            <p className="text-[10px] text-white/50 uppercase tracking-wider mt-0.5">Admin</p>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-6 space-y-1 relative z-10">
-          <div className="px-4 mb-2 text-xs font-bold text-white/40 uppercase tracking-wider">
-            Menu
-          </div>
+        <nav className="flex-1 py-4">
+          <p className="px-4 mb-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+            Navigation
+          </p>
           <NavItem
             path="/admin/dashboard"
             label="Dashboard"
@@ -145,24 +138,21 @@ export function AdminShell({ email, children }: AdminShellProps) {
           />
         </nav>
 
-        {/* Footer */}
-        <div className="p-6 bg-black/10 border-t border-white/10 relative z-10">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-xs text-white/70">
-              <div className="font-medium text-white mb-0.5">Signed in as</div>
-              <div className="truncate max-w-[140px]" title={email ?? "admin"}>{email ?? "admin"}</div>
+        <div className="p-4 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider">Signed in</p>
+              <p className="text-xs text-white/90 truncate" title={email ?? "admin"}>{email ?? "admin"}</p>
             </div>
-            
-            {/* Theme Toggle */}
             <button
               type="button"
-              className="relative w-12 h-6 rounded-full bg-black/30 transition-colors focus:outline-none focus:ring-1 focus:ring-[var(--color-gold-accent)]"
+              className="flex-shrink-0 w-10 h-6 rounded-full bg-white/20 transition-colors hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold-accent)] focus:ring-offset-2 focus:ring-offset-[var(--sidebar-bg)]"
               onClick={toggleTheme}
-              aria-label="Toggle Dark Mode"
+              aria-label="Toggle theme"
             >
               <div
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 flex items-center justify-center ${
-                  effectiveTheme === "dark" ? "translate-x-6" : "translate-x-0"
+                className={`w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 flex items-center justify-center ${
+                  effectiveTheme === "dark" ? "translate-x-4" : "translate-x-0.5"
                 }`}
               >
                 {effectiveTheme === "dark" ? (
@@ -178,25 +168,23 @@ export function AdminShell({ email, children }: AdminShellProps) {
               </div>
             </button>
           </div>
-
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-semibold tracking-wide transition-all border border-white/10 hover:border-white/20 text-white"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-white/90 transition-colors border border-white/10 hover:border-white/20"
           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" x2="9" y1="12" y2="12" />
-             </svg>
-            Sign Out
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" x2="9" y1="12" y2="12" />
+            </svg>
+            Sign out
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <section className="flex-1 p-4 md:p-6 overflow-auto">
-        <div className="w-full text-left">
-            {children}
+      <section className="flex-1 overflow-auto">
+        <div className="p-6 lg:p-8 max-w-4xl w-full mx-auto">
+          {children}
         </div>
       </section>
     </main>

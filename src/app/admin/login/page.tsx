@@ -32,90 +32,89 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main
-      className="kerala-main"
-      style={{
-        maxWidth: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "80vh",
-      }}
-    >
-      <section
-        className="announcement-section"
-        style={{ maxWidth: 420, width: "100%" }}
-      >
-        <h2 className="milestone-title">Pocket Kerala admin</h2>
-        <p className="secondary-bio-text">
-          Sign in with your admin email and password.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          style={{ textAlign: "left", marginTop: 20 }}
-        >
-          <label
-            className="secondary-bio-text"
-            style={{ display: "block", marginBottom: 8 }}
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            autoComplete="username"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            style={{
-              width: "100%",
-              padding: "8px 10px",
-              marginBottom: 16,
-              borderRadius: 4,
-              border: "1px solid #ccc",
-            }}
-          />
-
-          <label
-            className="secondary-bio-text"
-            style={{ display: "block", marginBottom: 8 }}
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            style={{
-              width: "100%",
-              padding: "8px 10px",
-              marginBottom: 16,
-              borderRadius: 4,
-              border: "1px solid #ccc",
-            }}
-          />
-
-          {error && (
-            <p
-              className="secondary-bio-text"
-              style={{ color: "#b00020", marginBottom: 12 }}
-            >
-              {error}
+    <main className="min-h-screen flex items-center justify-center bg-[var(--main-bg)] px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="bg-[var(--card-bg)] rounded-2xl shadow-xl border border-[var(--border-color)] overflow-hidden">
+          <div className="px-8 pt-10 pb-6 border-b border-[var(--border-color)]">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img
+                src="/images/logo.jpg"
+                alt="Pocket Kerala"
+                className="w-14 h-14 rounded-full border-2 border-[var(--color-gold-accent)] object-cover"
+              />
+              <div className="text-left">
+                <h1 className="text-xl font-bold text-[var(--main-text)] tracking-tight">
+                  Pocket Kerala
+                </h1>
+                <p className="text-sm text-[var(--main-text)] opacity-70">
+                  Admin Portal
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-[var(--main-text)] opacity-80 text-center">
+              Sign in with your admin credentials to continue.
             </p>
-          )}
+          </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="about-nav-btn"
-            style={{ padding: "8px 18px", width: "100%", marginTop: 4 }}
-          >
-            {submitting ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-      </section>
+          <form onSubmit={handleSubmit} className="p-8 space-y-5">
+            <div>
+              <label
+                htmlFor="admin-email"
+                className="block text-sm font-medium text-[var(--main-text)] mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="admin-email"
+                type="email"
+                required
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="admin-input w-full"
+                placeholder="admin@pocketkerala.in"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="admin-password"
+                className="block text-sm font-medium text-[var(--main-text)] mb-2"
+              >
+                Password
+              </label>
+              <input
+                id="admin-password"
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="admin-input w-full"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            {error && (
+              <div className="p-3 rounded-lg bg-[var(--color-red-danger)]/10 border border-[var(--color-red-danger)]/30 text-[var(--color-red-danger)] text-sm">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="admin-btn-primary w-full py-3"
+            >
+              {submitting ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-[var(--main-text)] opacity-50">
+          Authorized personnel only. All access is logged.
+        </p>
+      </div>
     </main>
   );
 }

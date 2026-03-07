@@ -1,1 +1,112 @@
 @import "tailwindcss";
+
+/* Admin design system */
+.admin-input {
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  color: var(--main-text);
+  background-color: var(--secondary-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-input::placeholder {
+  color: var(--main-text);
+  opacity: 0.5;
+}
+.admin-input:hover {
+  border-color: var(--color-gold-accent);
+}
+.admin-input:focus {
+  border-color: var(--color-gold-accent);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+}
+
+.admin-btn-primary {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #000;
+  background: linear-gradient(135deg, var(--color-gold-accent) 0%, #e6c200 100%);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.admin-btn-primary:hover:not(:disabled) {
+  opacity: 0.95;
+}
+.admin-btn-primary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+.admin-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.admin-btn-secondary {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--main-text);
+  background: var(--secondary-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.admin-btn-secondary:hover {
+  background: var(--border-color);
+  border-color: var(--main-text);
+}
+
+.admin-btn-danger {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #fff;
+  background: var(--color-red-danger);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s, filter 0.2s;
+}
+.admin-btn-danger:hover {
+  filter: brightness(1.1);
+}
+
+.admin-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px var(--shadow-color);
+  overflow: hidden;
+}
+
+.admin-card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.admin-card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-green-deep);
+}
+.admin-card-header p {
+  font-size: 0.8125rem;
+  color: var(--main-text);
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+.admin-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-green-deep);
+  margin-bottom: 0.25rem;
+}
+.admin-page-subtitle {
+  font-size: 1rem;
+  color: var(--main-text);
+  opacity: 0.8;
+}

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { AdminShell } from "../AdminShell";
-import Image from "next/image";
 
 type Sponsor = {
   id: number;
@@ -107,7 +106,7 @@ export default function AdminSponsorsPage() {
 
       if (insertError) throw insertError;
 
-      setSuccess("Sponsor added result successfully!");
+      setSuccess("Sponsor added successfully.");
       setName("");
       setWebsiteUrl("");
       setFile(null);
@@ -149,102 +148,93 @@ export default function AdminSponsorsPage() {
 
   return (
     <AdminShell email={email}>
-      <div className="w-full space-y-8 text-[var(--main-text)]">
-        <div className="text-left">
-          <h2 className="text-3xl font-bold text-[var(--color-green-deep)] dark:text-[var(--color-gold-accent)] mb-2" style={{ textShadow: "1px 1px 2px var(--shadow-color)" }}>
-            Sponsor Management
-          </h2>
-          <p className="opacity-80 text-lg font-serif">
+      <div className="space-y-8 text-[var(--main-text)]">
+        <div>
+          <h1 className="admin-page-title">Sponsor Management</h1>
+          <p className="admin-page-subtitle">
             Add and manage partners shown on the landing page.
           </p>
         </div>
 
         {error && (
-          <div className="p-4 rounded-lg bg-[var(--color-red-danger)]/10 text-[var(--color-red-danger)] text-sm font-medium border border-[var(--color-red-danger)]/20 animate-in fade-in slide-in-from-top-2">
+          <div className="p-4 rounded-lg bg-[var(--color-red-danger)]/10 text-[var(--color-red-danger)] text-sm font-medium border border-[var(--color-red-danger)]/30">
             {error}
           </div>
         )}
-        
         {success && (
-          <div className="p-4 rounded-lg bg-[var(--color-green-deep)]/10 text-[var(--color-green-deep)] text-sm font-medium border border-[var(--color-green-deep)]/20 animate-in fade-in slide-in-from-top-2">
+          <div className="p-4 rounded-lg bg-[var(--color-green-deep)]/10 text-[var(--color-green-deep)] text-sm font-medium border border-[var(--color-green-deep)]/30">
             {success}
           </div>
         )}
 
-        {/* Add New Sponsor Form */}
-        <div className="bg-[var(--card-bg)] rounded-xl shadow-md border border-[var(--border-color)] overflow-hidden">
-          <div className="p-6 border-b border-[var(--border-color)]">
-            <h3 className="text-xl font-semibold text-[var(--color-green-deep)]">
-              Add New Sponsor
-            </h3>
+        <div className="admin-card overflow-hidden">
+          <div className="admin-card-header">
+            <h3>Add New Sponsor</h3>
+            <p>Upload a logo and provide partner details.</p>
           </div>
           <div className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium mb-2 opacity-80">Provider Name *</label>
+                  <label htmlFor="sponsor-name" className="block text-sm font-medium text-[var(--main-text)] mb-2">
+                    Partner Name *
+                  </label>
                   <input
+                    id="sponsor-name"
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--secondary-card-bg)] text-[var(--main-text)] focus:ring-2 focus:ring-[var(--color-gold-accent)] outline-none transition-all"
+                    className="admin-input w-full"
                     placeholder="e.g. SmartPix Media"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2 opacity-80">Website URL</label>
+                  <label htmlFor="sponsor-url" className="block text-sm font-medium text-[var(--main-text)] mb-2">
+                    Website URL
+                  </label>
                   <input
+                    id="sponsor-url"
                     type="url"
                     value={websiteUrl}
                     onChange={(e) => setWebsiteUrl(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--secondary-card-bg)] text-[var(--main-text)] focus:ring-2 focus:ring-[var(--color-gold-accent)] outline-none transition-all"
+                    className="admin-input w-full"
                     placeholder="https://..."
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 opacity-80">Logo Image *</label>
+                <label htmlFor="sponsor-logo" className="block text-sm font-medium text-[var(--main-text)] mb-2">
+                  Logo Image *
+                </label>
                 <input
+                  id="sponsor-logo"
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="block w-full text-sm text-[var(--main-text)]
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-[var(--color-gold-accent)] file:text-black
-                    hover:file:brightness-110 cursor-pointer"
+                  className="block w-full text-sm text-[var(--main-text)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--color-gold-accent)] file:text-black hover:file:opacity-90 file:cursor-pointer cursor-pointer"
                 />
-                <p className="text-xs opacity-60 mt-1">Recommended height: 80px. PNG or JPG.</p>
+                <p className="text-xs text-[var(--main-text)] opacity-60 mt-1.5">Recommended height: 80px. PNG or JPG.</p>
               </div>
 
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={uploading}
-                  className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-gold-accent)] to-[#FFC107] hover:brightness-110 text-black font-bold rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {uploading ? "Uploading..." : "Add Sponsor"}
-                </button>
-              </div>
+              <button type="submit" disabled={uploading} className="admin-btn-primary px-6 py-2.5">
+                {uploading ? "Uploading..." : "Add Sponsor"}
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Sponsors List */}
-        <div className="bg-[var(--card-bg)] rounded-xl shadow-md border border-[var(--border-color)] overflow-hidden">
-          <div className="p-6 border-b border-[var(--border-color)]">
-            <h3 className="text-xl font-semibold text-[var(--color-green-deep)]">
-              Current Sponsors
-            </h3>
+        <div className="admin-card overflow-hidden">
+          <div className="admin-card-header">
+            <h3>Current Sponsors</h3>
+            <p>{sponsors.length} sponsor{sponsors.length !== 1 ? "s" : ""} listed.</p>
           </div>
           
           {loading ? (
-             <div className="p-8 text-center opacity-70 animate-pulse">Loading sponsors...</div>
+            <div className="p-12 text-center text-sm text-[var(--main-text)] opacity-70">Loading sponsors...</div>
           ) : sponsors.length === 0 ? (
-             <div className="p-8 text-center opacity-70">No sponsors added yet.</div>
+            <div className="p-12 text-center text-sm text-[var(--main-text)] opacity-70">No sponsors added yet. Use the form above to add your first partner.</div>
           ) : (
             <div className="divide-y divide-[var(--border-color)]">
               {sponsors.map((sponsor) => (

@@ -63,7 +63,9 @@ async function fetchPlaylistVideos(
   const data = await res.json();
   const items = data?.items ?? [];
 
-  const videos = items.map((item: { snippet?: { title?: string; publishedAt?: string; thumbnails?: { medium?: { url?: string }; default?: { url?: string } } }; contentDetails?: { videoId?: string } }) => {
+  type PlaylistVideo = { videoId: string; embedUrl: string; title: string; thumbnail: string; publishedAt: string };
+
+  const videos: PlaylistVideo[] = items.map((item: { snippet?: { title?: string; publishedAt?: string; thumbnails?: { medium?: { url?: string }; default?: { url?: string } } }; contentDetails?: { videoId?: string } }) => {
     const videoId = item.contentDetails?.videoId ?? "";
     const snippet = item.snippet ?? {};
     const thumb = snippet.thumbnails?.medium?.url ?? snippet.thumbnails?.default?.url ?? "";

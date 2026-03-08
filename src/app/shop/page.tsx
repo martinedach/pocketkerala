@@ -1,22 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { supabase } from "@/lib/supabaseClient";
 
-const MOCK_DESIGNS = [
-  { id: "design-1", name: "Green", description: "Green design", image: "/images/green.PNG" },
-  { id: "design-2", name: "Pink", description: "Pink design", image: "/images/pink.PNG" },
-  { id: "design-3", name: "Yellow", description: "Yellow design", image: "/images/yellow.PNG" },
-];
+interface PublicProduct {
+  id: string;
+  name: string;
+  description: string;
+}
 
-const SIZES = ["S", "M", "L", "XL", "XXL"];
-const PRICE = 899;
+interface PublicVariant {
+  id: string;
+  name: string;
+  size: string;
+  design: string;
+  price: number;
+  image_url: string;
+  stock_quantity: number;
+}
 
 export default function ShopPage() {
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<PublicProduct | null>(null);
+  const [variants, setVariants] = useState<PublicVariant[]>([]);
+  
+  // Available grouped options
+  const [availableDesigns, setAvailableDesigns] = useState<{name: string, image: string}[]>([]);
+  const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+
+  // Selected State
   const [design, setDesign] = useState<string>("");
   const [size, setSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
+  const [currentPrice, setCurrentPrice] = useState(899);
+  const [currentImage, setCurrentImage] = useState("");
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [addressLine1, setAddressLine1] = useState("");
@@ -24,12 +44,95 @@ export default function ShopPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
+  
   const [submitted, setSubmitted] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showSizeChartModal, setShowSizeChartModal] = useState(false);
 
-  const selectedDesign = MOCK_DESIGNS.find((d) => d.id === design);
-  const subtotal = PRICE * quantity;
+  // Fetch shop data
+  useEffect(() => {
+    const fetchShopData = async () => {
+      setLoading(true);
+      
+      const { data: prodData } = await supabase
+        .from("shop_products")
+        .select("id, name, description")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .single();
+        
+      if (prodData) {
+        setProduct(prodData);
+        
+        const { data: varData } = await supabase
+          .from("shop_product_variants")
+          .select("id, name, size, design, price, image_url, stock_quantity")
+          .eq("product_id", prodData.id)
+          .eq("is_active", true)
+          .gt("stock_quantity", 0);
+          
+        if (varData && varData.length > 0) {
+          setVariants(varData);
+          
+          const designsMap = new Map();
+          const sizesSet = new Set<string>();
+          
+          varData.forEach(v => {
+            if (v.design && !designsMap.has(v.design)) {
+               designsMap.set(v.design, v.image_url || "/images/placeholder.png");
+            }
+            if (v.size) {
+              sizesSet.add(v.size);
+            }
+          });
+          
+          const uniqueDesigns = Array.from(designsMap.entries()).map(([vName, image]) => ({ name: vName, image }));
+          const uniqueSizes = Array.from(sizesSet).sort((a, b) => {
+            const order = ["S", "M", "L", "XL", "XXL"];
+            return order.indexOf(a) - order.indexOf(b);
+          });
+          
+          setAvailableDesigns(uniqueDesigns);
+          setAvailableSizes(uniqueSizes);
+          
+          if (uniqueDesigns.length > 0) {
+            setDesign(uniqueDesigns[0].name);
+            setCurrentImage(uniqueDesigns[0].image);
+          }
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchShopData();
+  }, []);
+
+  useEffect(() => {
+    if (variants.length === 0) return;
+    
+    let matchedVariant = null;
+    if (design && size) {
+      matchedVariant = variants.find((v) => v.design === design && v.size === size);
+    } else if (design) {
+      matchedVariant = variants.find((v) => v.design === design);
+    }
+    
+    if (matchedVariant) {
+      setCurrentPrice(matchedVariant.price);
+      if (matchedVariant.image_url) {
+        setCurrentImage(matchedVariant.image_url);
+      } else {
+        const d = availableDesigns.find((d) => d.name === design);
+        if (d) setCurrentImage(d.image);
+      }
+    } else {
+      const d = availableDesigns.find((d) => d.name === design);
+      if (d) setCurrentImage(d.image);
+    }
+  }, [design, size, variants, availableDesigns]);
+
+  const subtotal = currentPrice * quantity;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +140,12 @@ export default function ShopPage() {
   };
 
   const handleAddToBag = () => {
-    if (!design || !size) return;
+    if ((availableDesigns.length > 0 && !design) || 
+        (availableSizes.length > 0 && !size)) return;
     setShowCheckout(true);
-    document.getElementById("checkout-section")?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+        document.getElementById("checkout-section")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   return (
@@ -54,17 +160,25 @@ export default function ShopPage() {
         <nav className="shop-breadcrumb" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span className="shop-breadcrumb-sep">/</span>
-          <span>Pocket Kerala T-Shirt</span>
+          <span>{product?.name || "Pocket Kerala T-Shirt"}</span>
         </nav>
 
-        {submitted ? (
+        {loading ? (
+             <div style={{ display: "flex", justifyContent: "center", padding: "100px", opacity: 0.7 }}>
+                 Loading shop products...
+             </div>
+        ) : !product ? (
+            <div style={{ display: "flex", justifyContent: "center", padding: "100px" }}>
+                 <p>Products are currently being updated. Check back soon.</p>
+             </div>
+        ) : submitted ? (
           <section className="shop-order-confirm">
             <h2 className="shop-order-confirm-title">Order confirmed</h2>
             <p className="shop-order-confirm-sub">Thank you for your order. We will contact you shortly.</p>
             <div className="shop-order-details">
               <div className="shop-order-row">
                 <span className="shop-order-label">Design</span>
-                <span>{selectedDesign?.name ?? design}</span>
+                <span>{design}</span>
               </div>
               <div className="shop-order-row">
                 <span className="shop-order-label">Size</span>
@@ -99,19 +213,19 @@ export default function ShopPage() {
               <div className="shop-gallery">
                 <div className="shop-gallery-main">
                   <img
-                    src={selectedDesign?.image ?? MOCK_DESIGNS[0].image}
-                    alt={selectedDesign?.name ?? "Select a design"}
+                    src={currentImage}
+                    alt={design || product.name || "Product Image"}
                     className="shop-gallery-img"
                   />
                 </div>
                 <div className="shop-gallery-thumbs">
-                  {MOCK_DESIGNS.map((d) => (
+                  {availableDesigns.map((d) => (
                     <button
-                      key={d.id}
+                      key={d.name}
                       type="button"
-                      onClick={() => setDesign(d.id)}
-                      className={`shop-thumb ${design === d.id ? "shop-thumb-active" : ""}`}
-                      aria-pressed={design === d.id}
+                      onClick={() => setDesign(d.name)}
+                      className={`shop-thumb ${design === d.name ? "shop-thumb-active" : ""}`}
+                      aria-pressed={design === d.name}
                       aria-label={`Select ${d.name}`}
                     >
                       <img src={d.image} alt={d.name} />
@@ -121,23 +235,23 @@ export default function ShopPage() {
               </div>
 
               <div className="shop-info">
-                <h1 className="shop-title">Pocket Kerala T-Shirt</h1>
-                <p className="shop-desc">Premium cotton t-shirt with exclusive Kerala-inspired designs. Unisex fit.</p>
+                <h1 className="shop-title">{product.name}</h1>
+                <p className="shop-desc">{product.description}</p>
 
                 <div className="shop-price-row">
-                  <span className="shop-price">Rs {PRICE}</span>
+                  <span className="shop-price">Rs {currentPrice}</span>
                   <span className="shop-price-note">Inclusive of all taxes</span>
                 </div>
 
                 <div className="shop-variant">
                   <label className="shop-variant-label">Design</label>
                   <div className="shop-design-grid">
-                    {MOCK_DESIGNS.map((d) => (
+                    {availableDesigns.map((d) => (
                       <button
-                        key={d.id}
+                        key={d.name}
                         type="button"
-                        onClick={() => setDesign(d.id)}
-                        className={`shop-design-btn ${design === d.id ? "shop-design-btn-active" : ""}`}
+                        onClick={() => setDesign(d.name)}
+                        className={`shop-design-btn ${design === d.name ? "shop-design-btn-active" : ""}`}
                       >
                         <span className="shop-design-btn-img">
                           <img src={d.image} alt={d.name} />
@@ -150,7 +264,7 @@ export default function ShopPage() {
                 <div className="shop-variant">
                   <label className="shop-variant-label">Size</label>
                   <div className="shop-size-grid">
-                    {SIZES.map((s) => (
+                    {availableSizes.map((s) => (
                       <button
                         key={s}
                         type="button"
@@ -210,27 +324,29 @@ export default function ShopPage() {
                   </div>
                 )}
 
-                <div className="shop-variant">
-                  <label className="shop-variant-label">Quantity</label>
-                  <div className="shop-qty">
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="shop-qty-btn"
-                      aria-label="Decrease quantity"
-                    >
-                      -
-                    </button>
-                    <span className="shop-qty-val">{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      className="shop-qty-btn"
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
+                <div className="shop-variant flex gap-4 mt-6">
+                    <div className="w-auto block">
+                        <label className="shop-variant-label">Quantity</label>
+                        <div className="shop-qty">
+                            <button
+                            type="button"
+                            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                            className="shop-qty-btn"
+                            aria-label="Decrease quantity"
+                            >
+                            -
+                            </button>
+                            <span className="shop-qty-val">{quantity}</span>
+                            <button
+                            type="button"
+                            onClick={() => setQuantity((q) => q + 1)}
+                            className="shop-qty-btn"
+                            aria-label="Increase quantity"
+                            >
+                            +
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="shop-actions">
@@ -298,6 +414,7 @@ export default function ShopPage() {
                     />
                   </div>
                 </div>
+
                 <div className="shop-form-field">
                   <label htmlFor="address1">Address line 1 *</label>
                   <input
@@ -309,6 +426,7 @@ export default function ShopPage() {
                     placeholder="House / flat no., building, street"
                   />
                 </div>
+
                 <div className="shop-form-field">
                   <label htmlFor="address2">Address line 2 (optional)</label>
                   <input
@@ -319,7 +437,8 @@ export default function ShopPage() {
                     placeholder="Area, landmark"
                   />
                 </div>
-                <div className="shop-form-grid shop-form-grid-2">
+
+                <div className="shop-form-grid shop-form-grid-3">
                   <div className="shop-form-field">
                     <label htmlFor="city">City *</label>
                     <input
@@ -356,6 +475,7 @@ export default function ShopPage() {
                     />
                   </div>
                 </div>
+
                 <div className="shop-checkout-summary">
                   <div className="shop-summary-row">
                     <span>Subtotal ({quantity} item{quantity > 1 ? "s" : ""})</span>

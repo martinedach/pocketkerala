@@ -1,0 +1,534 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { supabase } from "@/lib/supabaseClient";
+
+interface PublicProduct {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface PublicVariant {
+  id: string;
+  name: string;
+  size: string;
+  design: string;
+  price: number;
+  image_url: string;
+  stock_quantity: number;
+}
+
+export default function ShopPage() {
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<PublicProduct | null>(null);
+  const [variants, setVariants] = useState<PublicVariant[]>([]);
+  
+  // Available grouped options
+  const [availableDesigns, setAvailableDesigns] = useState<{name: string, image: string}[]>([]);
+  const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+  
+  // User selections
+  const [selectedDesign, setSelectedDesign] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [quantity, setQuantity] = useState(1);
+  const [currentPrice, setCurrentPrice] = useState(0);
+  const [currentImage, setCurrentImage] = useState("");
+
+  // Checkout Form
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+  
+  // UI States
+  const [submitted, setSubmitted] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [showSizeChartModal, setShowSizeChartModal] = useState(false);
+
+  // Fetch shop data
+  useEffect(() => {
+    const fetchShopData = async () => {
+      setLoading(true);
+      
+      // Get the first active product (Currently we only have the "Pocket Kerala T-Shirt")
+      const { data: prodData } = await supabase
+        .from("shop_products")
+        .select("id, name, description")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .single();
+        
+      if (prodData) {
+        setProduct(prodData);
+        
+        // Fetch variants for this product
+        const { data: varData } = await supabase
+          .from("shop_product_variants")
+          .select("id, name, size, design, price, image_url, stock_quantity")
+          .eq("product_id", prodData.id)
+          .eq("is_active", true)
+          // Ensure we don't show completely out of stock items if you want, or handle it in UI
+          .gt("stock_quantity", 0);
+          
+        if (varData && varData.length > 0) {
+          setVariants(varData);
+          
+          // Extract unique designs and sizes
+          const designsMap = new Map();
+          const sizesSet = new Set<string>();
+          
+          varData.forEach((v: { design: string | null, image_url: string | null, size: string | null }) => {
+            if (v.design && !designsMap.has(v.design)) {
+              designsMap.set(v.design, v.image_url || "/images/placeholder.png");
+            }
+            if (v.size) {
+              sizesSet.add(v.size);
+            }
+          });
+          
+          const uniqueDesigns = Array.from(designsMap.entries()).map(([name, image]) => ({ name, image }));
+          const uniqueSizes = Array.from(sizesSet).sort((a, b) => {
+            const order = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+            return order.indexOf(a) - order.indexOf(b);
+          });
+          
+          setAvailableDesigns(uniqueDesigns);
+          setAvailableSizes(uniqueSizes);
+          
+          // Pre-select first available option
+          if (uniqueDesigns.length > 0) {
+            setSelectedDesign(uniqueDesigns[0].name);
+            setCurrentImage(uniqueDesigns[0].image);
+          }
+        }
+      }
+      
+      setLoading(false);
+    };
+
+    fetchShopData();
+  }, []);
+
+  // Update image and price when selections change
+  useEffect(() => {
+    if (variants.length === 0) return;
+    
+    // Find the closest matching variant
+    let matchedVariant = null;
+    
+    if (selectedDesign && selectedSize) {
+      matchedVariant = variants.find((v) => v.design === selectedDesign && v.size === selectedSize);
+    } else if (selectedDesign) {
+      matchedVariant = variants.find((v) => v.design === selectedDesign);
+    }
+    
+    if (matchedVariant) {
+      setCurrentPrice(matchedVariant.price);
+      if (matchedVariant.image_url) {
+        setCurrentImage(matchedVariant.image_url);
+      } else {
+        // Fallback to the design's representative image
+        const d = availableDesigns.find(d => d.name === selectedDesign);
+        if (d) setCurrentImage(d.image);
+      }
+    } else {
+      // If no perfect match but design is selected, just update image
+      const d = availableDesigns.find(d => d.name === selectedDesign);
+      if (d) setCurrentImage(d.image);
+    }
+  }, [selectedDesign, selectedSize, variants, availableDesigns]);
+
+  const subtotal = currentPrice * quantity;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const handleAddToBag = () => {
+    if ((availableDesigns.length > 0 && !selectedDesign) || 
+        (availableSizes.length > 0 && !selectedSize)) return;
+    setShowCheckout(true);
+    setTimeout(() => {
+      document.getElementById("checkout-section")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  return (
+    <>
+      <SiteHeader
+        languageHref="/malayalam"
+        languageLabel="മലയാളം വെബ്സൈറ്റിനായി ഇവിടെ ക്ലിക്ക് ചെയ്യുക"
+        variant="compact"
+      />
+
+      <main className="shop-main min-h-screen">
+        <nav className="shop-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span className="shop-breadcrumb-sep">/</span>
+          <span>{product?.name || "Shop"}</span>
+        </nav>
+
+        {loading ? (
+             <div className="flex items-center justify-center p-24 text-[var(--main-text)] font-medium animate-pulse opacity-70">
+             Loading products...
+           </div>
+        ) : !product ? (
+            <div className="flex flex-col items-center justify-center p-24 text-center">
+                <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
+                <p className="opacity-70">We are currently updating our catalog. Please check back later.</p>
+            </div>
+        ) : submitted ? (
+          <section className="shop-order-confirm">
+            <h2 className="shop-order-confirm-title">Order confirmed</h2>
+            <p className="shop-order-confirm-sub">Thank you for your order. We will contact you shortly.</p>
+            <div className="shop-order-details">
+              <div className="shop-order-row">
+                <span className="shop-order-label">Product</span>
+                <span>{product.name}</span>
+              </div>
+              {selectedDesign && (
+                <div className="shop-order-row">
+                  <span className="shop-order-label">Design/Color</span>
+                  <span>{selectedDesign}</span>
+                </div>
+              )}
+              {selectedSize && (
+                <div className="shop-order-row">
+                  <span className="shop-order-label">Size</span>
+                  <span>{selectedSize}</span>
+                </div>
+              )}
+              <div className="shop-order-row">
+                <span className="shop-order-label">Quantity</span>
+                <span>{quantity}</span>
+              </div>
+              <div className="shop-order-row">
+                <span className="shop-order-label">Amount</span>
+                <span className="font-bold text-[var(--color-green-deep)]">₹{subtotal}</span>
+              </div>
+              <div className="shop-order-row mt-4 pt-4 border-t border-[var(--border-color)]">
+                <span className="shop-order-label">Name</span>
+                <span>{name}</span>
+              </div>
+              <div className="shop-order-row">
+                <span className="shop-order-label">Phone</span>
+                <span>{phone}</span>
+              </div>
+              <div className="shop-order-row">
+                <span className="shop-order-label">Address</span>
+                <span className="text-right">{addressLine1}{addressLine2 ? `, ${addressLine2}` : ""}<br/>{city}, {state} - {pincode}</span>
+              </div>
+            </div>
+            <p className="shop-order-note mt-6 text-sm opacity-70">This is a mock order. Payment integration will be added later.</p>
+          </section>
+        ) : (
+          <>
+            <section className="shop-product">
+              <div className="shop-gallery">
+                <div className="shop-gallery-main bg-[var(--secondary-card-bg)] rounded-xl overflow-hidden flex items-center justify-center min-h-[400px]">
+                  {currentImage ? (
+                    <img
+                      src={currentImage}
+                      alt={selectedDesign || product.name}
+                      className="shop-gallery-img object-contain w-full h-full max-h-[500px]"
+                    />
+                  ) : (
+                    <div className="opacity-30">No Image Available</div>
+                  )}
+                </div>
+                {availableDesigns.length > 1 && (
+                  <div className="shop-gallery-thumbs mt-4 flex gap-2 overflow-x-auto pb-2">
+                    {availableDesigns.map((d) => (
+                      <button
+                        key={d.name}
+                        type="button"
+                        onClick={() => setSelectedDesign(d.name)}
+                        className={`w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-colors ${selectedDesign === d.name ? "border-[var(--color-gold-accent)]" : "border-transparent opacity-70 hover:opacity-100"}`}
+                        aria-pressed={selectedDesign === d.name}
+                        aria-label={`Select ${d.name}`}
+                      >
+                        {d.image && <img src={d.image} alt={d.name} className="w-full h-full object-cover" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="shop-info">
+                <h1 className="shop-title">{product.name}</h1>
+                <p className="shop-desc">{product.description || "Premium quality merchandise with exclusive designs."}</p>
+
+                <div className="shop-price-row flex items-baseline gap-2 mt-4 mb-6">
+                  <span className="shop-price text-3xl font-bold text-[var(--color-green-deep)]">₹{currentPrice}</span>
+                  <span className="shop-price-note text-sm opacity-60">Inclusive of all taxes</span>
+                </div>
+
+                {availableDesigns.length > 0 && (
+                  <div className="shop-variant mb-6">
+                    <label className="shop-variant-label font-semibold block mb-2">Design</label>
+                    <div className="flex flex-wrap gap-2">
+                      {availableDesigns.map((d) => (
+                        <button
+                          key={d.name}
+                          type="button"
+                          onClick={() => setSelectedDesign(d.name)}
+                          className={`px-4 py-2 font-medium rounded-lg text-sm transition-colors border ${selectedDesign === d.name ? "bg-[var(--color-green-deep)] text-white border-[var(--color-green-deep)]" : "bg-[var(--secondary-card-bg)] border-[var(--border-color)] hover:border-[var(--color-gold-accent)]"}`}
+                        >
+                          {d.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {availableSizes.length > 0 && (
+                  <div className="shop-variant mb-6">
+                    <div className="flex justify-between mb-2">
+                        <label className="shop-variant-label font-semibold">Size</label>
+                        <button
+                            type="button"
+                            onClick={() => setShowSizeChartModal(true)}
+                            className="text-sm text-[var(--color-gold-accent)] hover:underline"
+                        >
+                            Size guide
+                        </button>
+                    </div>
+                    
+                    <div className="shop-size-grid flex flex-wrap gap-2">
+                      {availableSizes.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setSelectedSize(s)}
+                          className={`min-w-12 h-12 px-2 flex items-center justify-center font-bold rounded-lg transition-colors border ${selectedSize === s ? "bg-[var(--color-green-deep)] text-white border-[var(--color-green-deep)]" : "bg-[var(--secondary-card-bg)] border-[var(--border-color)] hover:border-[var(--color-gold-accent)]"}`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showSizeChartModal && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowSizeChartModal(false)}>
+                    <div className="bg-[var(--card-bg)] p-6 rounded-xl max-w-sm w-full shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-bold text-[var(--main-text)]">Size guide</h3>
+                        <button
+                          type="button"
+                          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--secondary-card-bg)] text-xl"
+                          onClick={() => setShowSizeChartModal(false)}
+                          aria-label="Close"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <div className="overflow-x-auto">
+                          <table className="w-full text-left text-sm border-collapse">
+                            <thead className="bg-[var(--secondary-card-bg)] text-[var(--main-text)]">
+                              <tr>
+                                <th className="p-3 border-b border-[var(--border-color)] font-semibold">Size</th>
+                                <th className="p-3 border-b border-[var(--border-color)] font-semibold">Chest</th>
+                                <th className="p-3 border-b border-[var(--border-color)] font-semibold">Length</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[var(--border-color)]">
+                              <tr className="hover:bg-[var(--secondary-card-bg)]/50">
+                                <td className="p-3 font-semibold">S</td><td className="p-3">36"</td><td className="p-3">26"</td>
+                              </tr>
+                              <tr className="hover:bg-[var(--secondary-card-bg)]/50">
+                                <td className="p-3 font-semibold">M</td><td className="p-3">38"</td><td className="p-3">27"</td>
+                              </tr>
+                              <tr className="hover:bg-[var(--secondary-card-bg)]/50">
+                                <td className="p-3 font-semibold">L</td><td className="p-3">40"</td><td className="p-3">28"</td>
+                              </tr>
+                              <tr className="hover:bg-[var(--secondary-card-bg)]/50">
+                                <td className="p-3 font-semibold">XL</td><td className="p-3">42"</td><td className="p-3">29"</td>
+                              </tr>
+                              <tr className="hover:bg-[var(--secondary-card-bg)]/50">
+                                <td className="p-3 font-semibold">XXL</td><td className="p-3">44"</td><td className="p-3">30"</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="shop-variant mb-8">
+                  <label className="shop-variant-label font-semibold block mb-2">Quantity</label>
+                  <div className="flex items-center w-32 border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--secondary-card-bg)]">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="w-10 h-10 flex items-center justify-center text-xl hover:bg-[var(--border-color)] transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <span className="flex-1 text-center font-bold">{quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="w-10 h-10 flex items-center justify-center text-xl hover:bg-[var(--border-color)] transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="shop-actions flex flex-col sm:flex-row gap-4 mb-8">
+                  <button
+                    type="button"
+                    onClick={handleAddToBag}
+                    disabled={variants.length === 0 || (availableDesigns.length > 0 && !selectedDesign) || (availableSizes.length > 0 && !selectedSize)}
+                    className="flex-1 py-4 px-6 rounded-lg font-bold text-lg text-white bg-[var(--color-green-deep)] hover:bg-[var(--color-green-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  >
+                    Buy now
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-[var(--border-color)]">
+                  <div className="flex flex-col items-center text-center p-4 bg-[var(--secondary-card-bg)] rounded-xl">
+                    <svg className="w-8 h-8 mb-2 text-[var(--color-gold-accent)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+                    <span className="text-sm font-semibold mb-1">Free Delivery</span>
+                    <span className="text-xs opacity-70">On orders above ₹500</span>
+                  </div>
+                  <div className="flex flex-col items-center text-center p-4 bg-[var(--secondary-card-bg)] rounded-xl">
+                    <svg className="w-8 h-8 mb-2 text-[var(--color-gold-accent)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    <span className="text-sm font-semibold mb-1">Secure Pay</span>
+                    <span className="text-xs opacity-70">100% secure payments</span>
+                  </div>
+                  <div className="flex flex-col items-center text-center p-4 bg-[var(--secondary-card-bg)] rounded-xl">
+                    <svg className="w-8 h-8 mb-2 text-[var(--color-gold-accent)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    <span className="text-sm font-semibold mb-1">Easy Returns</span>
+                    <span className="text-xs opacity-70">7-day return policy</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="checkout-section" className={`mt-12 transition-all duration-500 overflow-hidden ${showCheckout ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}`}>
+              <div className="bg-[var(--secondary-card-bg)] p-6 md:p-8 rounded-2xl max-w-4xl mx-auto border border-[var(--border-color)]">
+                  <h2 className="text-2xl font-bold mb-6 pb-4 border-b border-[var(--border-color)]">Delivery Details</h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2" htmlFor="name">Full name *</label>
+                        <input
+                          id="name"
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Enter your full name"
+                          className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2" htmlFor="phone">Phone number *</label>
+                        <input
+                          id="phone"
+                          type="tel"
+                          required
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="10-digit mobile number"
+                          pattern="[0-9]{10}"
+                          maxLength={10}
+                          className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2" htmlFor="address1">Address line 1 *</label>
+                      <input
+                        id="address1"
+                        type="text"
+                        required
+                        value={addressLine1}
+                        onChange={(e) => setAddressLine1(e.target.value)}
+                        placeholder="House / flat no., building, street"
+                        className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2" htmlFor="address2">Address line 2 (optional)</label>
+                      <input
+                        id="address2"
+                        type="text"
+                        value={addressLine2}
+                        onChange={(e) => setAddressLine2(e.target.value)}
+                        placeholder="Area, landmark"
+                        className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2" htmlFor="city">City *</label>
+                        <input
+                          id="city"
+                          type="text"
+                          required
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          placeholder="City"
+                          className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2" htmlFor="state">State *</label>
+                        <input
+                          id="state"
+                          type="text"
+                          required
+                          value={state}
+                          onChange={(e) => setState(e.target.value)}
+                          placeholder="State"
+                          className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2" htmlFor="pincode">Pincode *</label>
+                        <input
+                          id="pincode"
+                          type="text"
+                          required
+                          value={pincode}
+                          onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          placeholder="6-digit pincode"
+                          pattern="[0-9]{6}"
+                          maxLength={6}
+                          className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] focus:ring-2 focus:ring-[var(--color-green-deep)] focus:outline-none transition-shadow"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-8 pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-6">
+                      <div className="text-xl">
+                        Total Amount: <span className="font-bold text-[var(--color-green-deep)]">₹{subtotal}</span>
+                        <p className="text-sm opacity-60 mt-1">({quantity} item{quantity > 1 ? "s" : ""})</p>
+                      </div>
+                      <button type="submit" className="w-full sm:w-auto min-w-[200px] py-4 px-8 rounded-lg font-bold text-lg text-[var(--card-bg)] bg-[var(--main-text)] hover:opacity-90 transition-opacity shadow-lg">
+                        Place Order
+                      </button>
+                    </div>
+                  </form>
+              </div>
+            </section>
+          </>
+        )}
+      </main>
+
+      <SiteFooter contactHeading="Contact" />
+    </>
+  );
+}

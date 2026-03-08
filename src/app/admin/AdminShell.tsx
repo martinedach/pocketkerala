@@ -70,13 +70,9 @@ export function AdminShell({ email, children }: AdminShellProps) {
       <button
         type="button"
         onClick={() => navigate(path)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium rounded-lg mx-2 transition-all duration-200 ${
-          isActive
-            ? "bg-white/15 text-white border-l-2 border-[var(--color-gold-accent)] -ml-0.5 pl-[18px]"
-            : "text-white/80 hover:bg-white/8 hover:text-white border-l-2 border-transparent"
-        }`}
+        className={`admin-nav-item ${isActive ? "admin-nav-item-active" : ""}`}
       >
-        <span className={`${isActive ? "text-[var(--color-gold-accent)]" : "opacity-80"}`}>
+        <span className={`${isActive ? "text-black" : "opacity-80"}`}>
           {icon}
         </span>
         <span>{label}</span>
@@ -87,11 +83,11 @@ export function AdminShell({ email, children }: AdminShellProps) {
   return (
     <main className="h-screen overflow-hidden bg-[var(--main-bg)] flex flex-col md:flex-row font-sans">
       {/* Mobile header */}
-      <header className="md:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--sidebar-bg)] text-white border-b border-white/10 flex-shrink-0 z-20">
+      <header className="md:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--sidebar-bg)] text-[#ffffff] border-b-2 border-black flex-shrink-0 z-20">
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
-          className="p-2 -ml-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="p-2 -ml-2 rounded-lg hover:bg-black/20 transition-colors border-2 border-transparent hover:border-black hover:shadow-[2px_2px_0px_#000000]"
           aria-label="Open menu"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -131,16 +127,16 @@ export function AdminShell({ email, children }: AdminShellProps) {
           aria-hidden
         />
         <aside
-          className={`absolute top-0 left-0 bottom-0 w-[min(280px,85vw)] bg-[var(--sidebar-bg)] text-white flex flex-col shadow-xl transition-transform duration-200 ${
+          className={`absolute top-0 left-0 bottom-0 w-[min(280px,85vw)] admin-sidebar text-[var(--main-text)] flex flex-col transition-transform duration-200 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="p-4 flex items-center justify-between border-b border-white/10">
+          <div className="p-4 flex items-center justify-between border-b-2 border-black bg-[var(--sidebar-bg)]">
             <div className="flex items-center gap-3">
-              <img src="/images/logo.jpg" alt="Pocket Kerala" className="w-10 h-10 rounded-full border-2 border-[var(--color-gold-accent)] object-cover flex-shrink-0" />
+              <img src="/images/logo.jpg" alt="Pocket Kerala" className="w-10 h-10 border-2 border-black shadow-[2px_2px_0px_#000000] object-cover flex-shrink-0" />
               <div>
-                <span className="font-semibold text-white text-sm">Pocket</span>
-                <span className="font-serif italic text-[var(--color-gold-accent)] text-sm ml-0.5">Kerala</span>
+                <span className="font-bold text-white text-sm">Pocket</span>
+                <span className="font-bold text-[var(--color-gold-accent)] text-shadow-sm text-sm ml-0.5">Kerala</span>
               </div>
             </div>
             <button
@@ -162,12 +158,13 @@ export function AdminShell({ email, children }: AdminShellProps) {
             <NavItem path="/admin/sponsors" label="Sponsors" icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>} />
             <NavItem path="/admin/instagram" label="Instagram" icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.451" y1="6.5" y2="6.549"/></svg>} />
             <NavItem path="/admin/razorpay" label="Razorpay" icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>} />
+            <NavItem path="/admin/shop" label="Shop Store" icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>} />
           </nav>
-          <div className="p-4 border-t border-white/10 space-y-3">
+          <div className="p-4 border-t-2 border-black space-y-3 bg-[var(--sidebar-bg)] mt-auto">
             <div className="flex items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider">Signed in</p>
-                <p className="text-xs text-white/90 truncate" title={email ?? "admin"}>{email ?? "admin"}</p>
+                <p className="text-[10px] font-medium text-white opacity-60 uppercase tracking-wider">Signed in</p>
+                <p className="text-xs font-bold text-white truncate" title={email ?? "admin"}>{email ?? "admin"}</p>
               </div>
               <button type="button" className="flex-shrink-0 w-10 h-6 rounded-full bg-white/20" onClick={toggleTheme} aria-label="Toggle theme">
                 <div className={`w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 flex items-center justify-center ${effectiveTheme === "dark" ? "translate-x-4" : "translate-x-0.5"}`}>
@@ -175,7 +172,7 @@ export function AdminShell({ email, children }: AdminShellProps) {
                 </div>
               </button>
             </div>
-            <button onClick={handleSignOut} className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-white/90 border border-white/10">
+            <button onClick={handleSignOut} className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-black/20 hover:bg-[var(--color-red-danger)] text-xs font-bold text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:shadow-[4px_4px_0px_#000000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
               Sign out
             </button>
@@ -184,16 +181,16 @@ export function AdminShell({ email, children }: AdminShellProps) {
       </div>
 
       {/* Sidebar - desktop */}
-      <aside className="hidden md:flex w-64 lg:w-72 bg-[var(--sidebar-bg)] text-white flex-col shadow-xl flex-shrink-0 overflow-y-auto">
-        <div className="p-5 flex items-center gap-3 border-b border-white/10">
+      <aside className="hidden md:flex w-64 lg:w-72 admin-sidebar flex-col flex-shrink-0 overflow-y-auto z-10">
+        <div className="p-5 flex items-center gap-3 border-b-2 border-black bg-[var(--sidebar-bg)]">
           <img
             src="/images/logo.jpg"
             alt="Pocket Kerala"
-            className="w-10 h-10 rounded-full border-2 border-[var(--color-gold-accent)] object-cover flex-shrink-0"
+            className="w-10 h-10 border-2 border-black shadow-[2px_2px_0px_#000000] object-cover flex-shrink-0"
           />
           <div>
-            <span className="font-semibold text-white text-sm tracking-tight">Pocket</span>
-            <span className="font-serif italic text-[var(--color-gold-accent)] text-sm ml-0.5">Kerala</span>
+            <span className="font-bold text-white text-sm tracking-tight">Pocket</span>
+            <span className="font-bold text-[var(--color-gold-accent)] text-shadow-sm text-sm ml-0.5">Kerala</span>
             <p className="text-[10px] text-white/50 uppercase tracking-wider mt-0.5">Admin</p>
           </div>
         </div>
@@ -256,13 +253,24 @@ export function AdminShell({ email, children }: AdminShellProps) {
               </svg>
             }
           />
+          <NavItem
+            path="/admin/shop"
+            label="Shop"
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+            }
+          />
         </nav>
 
-        <div className="p-4 border-t border-white/10 space-y-3">
+        <div className="p-4 border-t-2 border-black space-y-3 bg-[var(--sidebar-bg)] mt-auto">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider">Signed in</p>
-              <p className="text-xs text-white/90 truncate" title={email ?? "admin"}>{email ?? "admin"}</p>
+              <p className="text-[10px] font-medium text-white opacity-60 uppercase tracking-wider">Signed in</p>
+              <p className="text-xs font-bold text-white truncate" title={email ?? "admin"}>{email ?? "admin"}</p>
             </div>
             <button
               type="button"
@@ -290,7 +298,7 @@ export function AdminShell({ email, children }: AdminShellProps) {
           </div>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-white/90 transition-colors border border-white/10 hover:border-white/20"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-black/20 hover:bg-[var(--color-red-danger)] text-xs font-bold text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:shadow-[4px_4px_0px_#000000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -302,8 +310,8 @@ export function AdminShell({ email, children }: AdminShellProps) {
         </div>
       </aside>
 
-      <section className="flex-1 overflow-auto min-h-0">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl w-full mx-auto">
+      <section className="flex-1 overflow-auto min-h-0 bg-[var(--main-bg)]">
+        <div className="p-4 sm:p-6 lg:p-8 w-full">
           {children}
         </div>
       </section>

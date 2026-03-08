@@ -1,127 +1,281 @@
 @import "tailwindcss";
 
-/* Admin design system */
+/* Admin Neobrutalist Design System */
+
+/* The signature brutalist shadow variables (can be overridden by theme later, but generally solid black/dark or stark contrast) */
+:root {
+  --brutal-border: 2px solid var(--main-text);
+  --brutal-shadow: 4px 4px 0px var(--main-text);
+  --brutal-shadow-hover: 6px 6px 0px var(--main-text);
+  --brutal-active-translate: translate(4px, 4px);
+  --brutal-radius: 0px; /* Sharp corners for brutalism, or use 0.5rem for soft brutalism. Let's use 8px for retro-modern feel */
+}
+
+/* Base input styling */
 .admin-input {
-  padding: 0.625rem 0.875rem;
+  padding: 0.75rem 1rem;
   font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--main-text);
   background-color: var(--secondary-card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  border: var(--brutal-border);
+  border-radius: 8px; /* Soft brutalism */
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 2px 2px 0px var(--main-text);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
 .admin-input::placeholder {
   color: var(--main-text);
   opacity: 0.5;
 }
+
 .admin-input:hover {
-  border-color: var(--color-gold-accent);
-}
-.admin-input:focus {
-  border-color: var(--color-gold-accent);
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--main-text);
+  transform: translate(-2px, -2px);
 }
 
-.admin-btn-primary {
-  font-weight: 600;
-  font-size: 0.9375rem;
-  color: #000;
-  background: linear-gradient(135deg, var(--color-gold-accent) 0%, #e6c200 100%);
-  border: none;
-  border-radius: 0.5rem;
+.admin-input:focus {
+  border-color: var(--color-gold-accent);
+  box-shadow: 4px 4px 0px var(--color-gold-accent);
+  transform: translate(-2px, -2px);
+}
+
+/* Button Base */
+.admin-btn-primary, .admin-btn-secondary, .admin-btn-danger {
+  font-weight: 700;
+  border-radius: 8px;
+  border: var(--brutal-border);
+  transition: all 0.15s ease-out;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
 }
+
+/* Primary Button (Gold/Yellow) */
+.admin-btn-primary {
+  padding: 0.75rem 1.25rem;
+  color: #000; /* Always black text for contrast against gold */
+  background-color: var(--color-gold-accent);
+  box-shadow: var(--brutal-shadow);
+}
+
 .admin-btn-primary:hover:not(:disabled) {
-  opacity: 0.95;
+  box-shadow: var(--brutal-shadow-hover);
+  transform: translate(-2px, -2px);
+  background-color: #ffd700;
 }
+
 .admin-btn-primary:active:not(:disabled) {
-  transform: scale(0.99);
+  transform: var(--brutal-active-translate);
+  box-shadow: 0px 0px 0px var(--main-text);
 }
+
 .admin-btn-primary:disabled {
-  opacity: 0.7;
+  background-color: var(--secondary-card-bg);
+  color: var(--main-text);
+  opacity: 0.5;
+  box-shadow: none;
+  transform: none;
   cursor: not-allowed;
 }
 
+/* Secondary Button (Standard/Neutral) */
 .admin-btn-secondary {
-  font-weight: 500;
-  font-size: 0.875rem;
+  padding: 0.6rem 1.2rem;
   color: var(--main-text);
-  background: var(--secondary-card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-.admin-btn-secondary:hover {
-  background: var(--border-color);
-  border-color: var(--main-text);
+  background-color: var(--card-bg);
+  box-shadow: 3px 3px 0px var(--main-text);
 }
 
+.admin-btn-secondary:hover:not(:disabled) {
+  box-shadow: 5px 5px 0px var(--main-text);
+  transform: translate(-2px, -2px);
+  background-color: var(--secondary-card-bg);
+}
+
+.admin-btn-secondary:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--main-text);
+}
+
+/* Danger Button */
 .admin-btn-danger {
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: #fff;
-  background: var(--color-red-danger);
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: opacity 0.2s, filter 0.2s;
-}
-.admin-btn-danger:hover {
-  filter: brightness(1.1);
+  padding: 0.6rem 1.2rem;
+  color: #ffffff;
+  background-color: var(--color-red-danger);
+  box-shadow: 3px 3px 0px var(--main-text);
 }
 
+.admin-btn-danger:hover:not(:disabled) {
+  box-shadow: 5px 5px 0px var(--main-text);
+  transform: translate(-2px, -2px);
+}
+
+.admin-btn-danger:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--main-text);
+}
+
+/* Cards */
 .admin-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px var(--shadow-color);
+  background-color: var(--card-bg);
+  border: var(--brutal-border);
+  border-radius: 12px;
+  box-shadow: var(--brutal-shadow);
   overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.admin-card:hover {
+  box-shadow: var(--brutal-shadow-hover);
+  transform: translate(-2px, -2px);
 }
 
 .admin-card-header {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-color);
-}
-@media (min-width: 640px) {
-  .admin-card-header {
-    padding: 1.25rem 1.5rem;
-  }
-}
-.admin-card-header h3 {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  color: var(--color-green-deep);
-}
-@media (min-width: 640px) {
-  .admin-card-header h3 {
-    font-size: 1.125rem;
-  }
-}
-.admin-card-header p {
-  font-size: 0.8125rem;
-  color: var(--main-text);
-  opacity: 0.7;
-  margin-top: 0.25rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: var(--brutal-border);
+  background-color: var(--secondary-card-bg);
 }
 
-.admin-page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-green-deep);
-  margin-bottom: 0.25rem;
-}
-@media (min-width: 640px) {
-  .admin-page-title {
-    font-size: 1.75rem;
-  }
-}
-.admin-page-subtitle {
-  font-size: 1rem;
+.admin-card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--main-text);
-  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.admin-card-header p {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--main-text);
+  padding-top: 0.25rem;
+}
+
+/* Page Titles */
+.admin-page-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--main-text);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  text-shadow: 2px 2px 0px var(--color-gold-accent);
+}
+
+.admin-page-subtitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--main-text);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--color-gold-accent);
+  padding-left: 1rem;
+}
+
+/* Neobrutalist specific layout utility hooks */
+.admin-sidebar {
+  border-right: var(--brutal-border);
+  background-color: var(--sidebar-bg) !important;
+  color: #ffffff; /* Explicitly set white text for the dark green sidebar */
+}
+
+.admin-nav-item {
+  width: calc(100% - 1rem); /* leaving space for margin */
+  margin: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 800;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.15s ease-out;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: transparent;
+}
+
+.admin-nav-item:hover {
+  border: var(--brutal-border);
+  box-shadow: 3px 3px 0px var(--main-text);
+  transform: translate(-2px, -2px);
+  background-color: rgba(255, 255, 255, 0.1); /* Slight white overlay on hover for contrast */
+}
+
+.admin-nav-item-active {
+  border: var(--brutal-border);
+  box-shadow: 3px 3px 0px var(--main-text);
+  transform: translate(-2px, -2px);
+  background-color: var(--color-gold-accent);
+  color: #000;
+}
+
+.admin-nav-item-active svg {
+  color: #000;
+}
+
+/* Tables inside the admin area, used in categories/products list */
+.admin-table-container {
+  border: var(--brutal-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0px var(--main-text);
+  margin-bottom: 1rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: var(--secondary-card-bg);
+  border-bottom: var(--brutal-border);
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 1rem;
+  text-align: left;
+}
+
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color); /* Lighter border for inner rows */
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background-color: var(--secondary-card-bg);
+}
+
+/* Pill badges */
+.admin-badge-active {
+  background-color: var(--color-green-deep);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  border: 2px solid var(--main-text);
+  box-shadow: 2px 2px 0px var(--main-text);
+  text-transform: uppercase;
+}
+
+.admin-badge-inactive {
+  background-color: var(--secondary-card-bg);
+  color: var(--main-text);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  border: 2px solid var(--main-text);
+  box-shadow: 2px 2px 0px var(--main-text);
+  text-transform: uppercase;
 }

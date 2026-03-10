@@ -136,12 +136,12 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-[#FFF4E0] text-black font-sans pb-20 selection:bg-pink-400 selection:text-white">
       {/* HEADER SECTION */}
-      <header className="fixed top-0 w-full z-50 bg-[#FFD700] border-b-4 border-black px-6 py-4 flex justify-between items-center shadow-[0_4px_0_0_#000]">
+      <header className="fixed top-0 w-full z-50 bg-[#FFD700] border-b-4 border-black px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center shadow-[0_4px_0_0_#000]">
         <div className="flex items-center gap-4">
           <img
             src="/images/logo.jpg"
             alt="Pocket Kerala"
-            className="w-12 h-12 object-cover border-2 border-black rounded-full shadow-[2px_2px_0_0_#000]"
+            className="w-10 h-10 sm:w-12 sm:h-12 object-cover border-2 border-black rounded-full shadow-[2px_2px_0_0_#000]"
           />
           <div className="font-black text-2xl tracking-tighter uppercase hidden sm:block">
             Pocket Kerala
@@ -149,7 +149,7 @@ export default function ShopPage() {
         </div>
       </header>
 
-      <main className="pt-28 px-6 max-w-6xl mx-auto flex flex-col gap-12">
+      <main className="pt-24 sm:pt-28 px-6 max-w-6xl mx-auto flex flex-col gap-12">
         <nav className="font-black uppercase text-lg inline-block bg-white border-4 border-black px-4 py-2 shadow-[4px_4px_0_0_#000] w-max -rotate-1">
           <a href="/" className="hover:underline decoration-2">Home</a>
           <span className="mx-2">/</span>

@@ -50,12 +50,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#FFF4E0] text-black font-sans pb-20 selection:bg-pink-400 selection:text-white">
       {/* HEADER SECTION */}
-      <header className="fixed top-0 w-full z-50 bg-[#FFD700] border-b-4 border-black px-6 py-4 flex flex-col sm:flex-row gap-4 justify-between items-center shadow-[0_4px_0_0_#000]">
+      <header className="fixed top-0 w-full z-50 bg-[#FFD700] border-b-4 border-black px-4 py-3 sm:px-6 sm:py-4 flex flex-row gap-4 justify-between items-center shadow-[0_4px_0_0_#000]">
         <div className="flex items-center gap-4">
           <img
             src="/images/logo.jpg"
             alt="Pocket Kerala"
-            className="w-12 h-12 object-cover border-2 border-black rounded-full shadow-[2px_2px_0_0_#000]"
+            className="w-10 h-10 sm:w-12 sm:h-12 object-cover border-2 border-black rounded-full shadow-[2px_2px_0_0_#000]"
           />
           <div className="font-black text-2xl tracking-tighter uppercase hidden sm:block">
             Pocket Kerala
@@ -64,13 +64,13 @@ export default function Home() {
         <div className="flex gap-2">
           <button
             onClick={() => setLang("en")}
-            className={`${lang === 'en' ? 'bg-black text-white' : 'bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000]'} px-4 py-2 border-2 border-black font-bold uppercase text-sm transition-all`}
+            className={`${lang === 'en' ? 'bg-black text-white' : 'bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000]'} px-3 py-1.5 sm:px-4 sm:py-2 border-2 border-black font-bold uppercase text-xs sm:text-sm transition-all`}
           >
             English
           </button>
           <button
             onClick={() => setLang("ml")}
-            className={`${lang === 'ml' ? 'bg-black text-white' : 'bg-[#FF90E8] text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000]'} px-4 py-2 border-2 border-black font-bold uppercase text-sm transition-all`}
+            className={`${lang === 'ml' ? 'bg-black text-white' : 'bg-[#FF90E8] text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000]'} px-3 py-1.5 sm:px-4 sm:py-2 border-2 border-black font-bold uppercase text-xs sm:text-sm transition-all`}
           >
             മലയാളം
           </button>
@@ -78,7 +78,7 @@ export default function Home() {
       </header>
 
       {/* HERO SECTION WITH IMAGE */}
-      <main className="pt-32 sm:pt-24 px-6 max-w-6xl mx-auto flex flex-col gap-12">
+      <main className="pt-24 sm:pt-28 px-6 max-w-6xl mx-auto flex flex-col gap-12">
         <section className="relative w-full border-4 border-black bg-white shadow-[12px_12px_0_0_#000] overflow-hidden group">
           <div className="absolute inset-0 z-0 border-b-4 border-black bg-black">
             <img

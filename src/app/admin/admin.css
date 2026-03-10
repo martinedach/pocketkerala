@@ -208,11 +208,11 @@
 }
 
 .admin-nav-item-active {
+  background-color: var(--color-gold-accent);
+  color: #000;
   border: var(--brutal-border);
   box-shadow: 3px 3px 0px var(--main-text);
   transform: translate(-2px, -2px);
-  background-color: var(--color-gold-accent);
-  color: #000;
 }
 
 .admin-nav-item-active svg {

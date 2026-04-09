@@ -16,6 +16,33 @@ type Sponsor = {
 type SectionId = "about" | "goals" | "sponsors" | "coffee" | null;
 type Language = "en" | "ml";
 
+const FOLLOW_US_LINKS = [
+  {
+    key: "youtube",
+    href: "https://www.youtube.com/@pocketkerala",
+    src: "/images/youtube_icon.png",
+    label: "YouTube",
+  },
+  {
+    key: "instagram",
+    href: "https://www.instagram.com/pocketkerala",
+    src: "/images/instagram_icon.png",
+    label: "Instagram",
+  },
+  {
+    key: "facebook",
+    href: "https://www.facebook.com/pocketkerala",
+    src: "/images/facebook_icon.png",
+    label: "Facebook",
+  },
+  {
+    key: "tiktok",
+    href: "https://www.tiktok.com/@pocketkerala",
+    src: "/images/tiktok_icon.svg",
+    label: "TikTok",
+  },
+] as const;
+
 export default function Home() {
   const [openSection, setOpenSection] = useState<SectionId>(null);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
@@ -269,7 +296,7 @@ export default function Home() {
         <section className="bg-[#90A8ED] border-4 border-black p-8 shadow-[12px_12px_0_0_#000] mt-12 rotate-[-1deg]">
           <h3 className="text-3xl font-black uppercase mb-4 border-b-4 border-black pb-2 inline-block bg-white px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#FFD700]">Latest Updates</h3>
           <CountdownSection
-            milestoneTitle={lang === 'en' ? "Thanks for helping us reach 200+ Subs!" : "200+ സബ്സ്ക്രൈബേഴ്സ് തികയ്ക്കാൻ സഹായിച്ചതിന് നന്ദി!"}
+            lang={lang}
             postLaunchMessage={lang === 'en' ? "WATCH OUR LATEST VIDEO BELOW!" : "ഞങ്ങളുടെ പുതിയ വീഡിയോ താഴെ കാണാം!"}
             description={lang === 'en' ? "Get ready to explore the beauty and spirit of Kerala right in your pocket." : "കേരളത്തിന്റെ ഭംഗിയും ആത്മാവും നിങ്ങളുടെ പോക്കറ്റിലൂടെ അറിയാൻ തയ്യാറായിക്കോളൂ."}
             videoSrc="https://www.youtube.com/embed/duEQT4Wk8XM?origin=https://pocketkerala.in"
@@ -290,9 +317,16 @@ export default function Home() {
           <div className="bg-[#3b82f6] border-4 border-black p-6 shadow-[8px_8px_0_0_#000] text-white -rotate-1 h-full flex flex-col justify-center items-center text-center">
             <h3 className="text-2xl font-black uppercase mb-4 border-b-4 border-black pb-2 text-[#FFD700]">Follow Us</h3>
             <div className="flex flex-wrap justify-center gap-4">
-              {['youtube', 'instagram', 'facebook'].map(social => (
-                <a key={social} href="#" className="bg-white border-4 border-black p-3 hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000] transition-all pb-2">
-                  <img src={`/images/${social}_icon.png`} alt={social} className="w-8 h-8 object-contain" />
+              {FOLLOW_US_LINKS.map(({ key, href, src, label }) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white border-4 border-black p-3 hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000] transition-all pb-2"
+                  aria-label={label}
+                >
+                  <img src={src} alt="" className="w-8 h-8 object-contain" />
                 </a>
               ))}
             </div>

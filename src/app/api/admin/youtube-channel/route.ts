@@ -11,13 +11,12 @@ async function fetchChannelByVideoId(videoId: string, apiKey: string) {
   return channelId ?? null;
 }
 
-async function fetchChannelStats(channelId: string, apiKey: string) {
-  const res = await fetch(
-    `${YOUTUBE_API_BASE}/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`,
-  );
-  const data = await res.json();
-  const item = data?.items?.[0];
-  if (!item) return null;
+function channelFromListItem(item: {
+  id?: string;
+  snippet?: { title?: string; description?: string; thumbnails?: { medium?: { url?: string }; default?: { url?: string } } };
+  statistics?: { subscriberCount?: string; videoCount?: string; viewCount?: string };
+} | undefined) {
+  if (!item?.id) return null;
 
   const snippet = item.snippet ?? {};
   const stats = item.statistics ?? {};
@@ -35,6 +34,25 @@ async function fetchChannelStats(channelId: string, apiKey: string) {
   };
 }
 
+async function fetchChannelStats(channelId: string, apiKey: string) {
+  const res = await fetch(
+    `${YOUTUBE_API_BASE}/channels?part=snippet,statistics&id=${encodeURIComponent(channelId)}&key=${apiKey}`,
+  );
+  const data = await res.json();
+  return channelFromListItem(data?.items?.[0]);
+}
+
+async function fetchChannelStatsByHandle(handle: string, apiKey: string) {
+  const clean = handle.trim().replace(/^@/, "");
+  if (!clean) return null;
+
+  const res = await fetch(
+    `${YOUTUBE_API_BASE}/channels?part=snippet,statistics&forHandle=${encodeURIComponent(clean)}&key=${apiKey}`,
+  );
+  const data = await res.json();
+  return channelFromListItem(data?.items?.[0]);
+}
+
 export async function GET(request: NextRequest) {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
@@ -47,6 +65,18 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const videoId = searchParams.get("videoId");
   const channelId = searchParams.get("channelId");
+  const handle = searchParams.get("handle");
+
+  if (handle) {
+    const channel = await fetchChannelStatsByHandle(handle, apiKey);
+    if (!channel) {
+      return NextResponse.json(
+        { error: "Channel not found for handle" },
+        { status: 404 },
+      );
+    }
+    return NextResponse.json(channel);
+  }
 
   let resolvedChannelId: string | null = channelId;
 
@@ -56,7 +86,7 @@ export async function GET(request: NextRequest) {
 
   if (!resolvedChannelId) {
     return NextResponse.json(
-      { error: "Provide videoId or channelId" },
+      { error: "Provide videoId, channelId, or handle" },
       { status: 400 },
     );
   }

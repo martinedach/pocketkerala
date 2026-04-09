@@ -2,6 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import {
+  getSubscriberMilestoneThreshold,
+  milestoneEarlySupporterEn,
+  milestoneEarlySupporterMl,
+  milestoneThanksTitleEn,
+  milestoneThanksTitleMl,
+  milestoneUnavailableEn,
+  milestoneUnavailableMl,
+} from "@/lib/subscriberMilestone";
+import { parseYoutubeChannelHandle } from "@/lib/youtubeChannelHandle";
+
+/** Default @handle (https://www.youtube.com/@PocketKerala) — same API key, `channels.list` `forHandle`. */
+const DEFAULT_MILESTONE_CHANNEL_HANDLE = "PocketKerala";
 
 type TimeLeft = {
   days: number;
@@ -10,15 +23,26 @@ type TimeLeft = {
   seconds: number;
 } | null;
 
+type Lang = "en" | "ml";
+
 type CountdownSectionProps = {
-  milestoneTitle: string;
+  lang: Lang;
   postLaunchMessage: string;
   description: string;
   videoSrc: string;
 };
 
+function parseSubscriberCount(raw: unknown): number | null {
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  if (typeof raw === "string" && raw.trim() !== "") {
+    const n = parseInt(raw, 10);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
 export function CountdownSection({
-  milestoneTitle,
+  lang,
   postLaunchMessage,
   description,
   videoSrc,
@@ -26,6 +50,9 @@ export function CountdownSection({
   const [videoUrl, setVideoUrl] = useState(videoSrc);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(null);
   const [countdownMessage, setCountdownMessage] = useState("");
+  const [milestoneTitle, setMilestoneTitle] = useState(() =>
+    lang === "en" ? milestoneUnavailableEn() : milestoneUnavailableMl(),
+  );
 
   useEffect(() => {
     const launchDate = new Date("Jan 2, 2026 18:30:00 GMT+0530").getTime();
@@ -77,6 +104,80 @@ export function CountdownSection({
 
     loadVideoUrl();
   }, [videoSrc]);
+
+  useEffect(() => {
+    const rawHandle =
+      typeof process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_HANDLE === "string"
+        ? process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_HANDLE.trim()
+        : "";
+    const handleFromEnv = rawHandle
+      ? parseYoutubeChannelHandle(rawHandle)
+      : null;
+
+    const envChannelId =
+      typeof process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID === "string"
+        ? process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID.trim()
+        : "";
+
+    const statsUrl = handleFromEnv
+      ? `/api/admin/youtube-channel?handle=${encodeURIComponent(handleFromEnv)}`
+      : envChannelId.length > 0
+        ? `/api/admin/youtube-channel?channelId=${encodeURIComponent(envChannelId)}`
+        : `/api/admin/youtube-channel?handle=${encodeURIComponent(DEFAULT_MILESTONE_CHANNEL_HANDLE)}`;
+
+    let cancelled = false;
+    fetch(statsUrl)
+      .then(async (res) => {
+        const data = (await res.json()) as {
+          error?: string;
+          subscriberCount?: unknown;
+        };
+        if (!res.ok || data.error) {
+          return { ok: false as const, subscriberCount: null };
+        }
+        const subscriberCount = parseSubscriberCount(data.subscriberCount);
+        return {
+          ok: subscriberCount !== null,
+          subscriberCount,
+        };
+      })
+      .then((result) => {
+        if (cancelled) return;
+        if (!result.ok || result.subscriberCount === null) {
+          setMilestoneTitle(
+            lang === "en" ? milestoneUnavailableEn() : milestoneUnavailableMl(),
+          );
+          return;
+        }
+        const threshold = getSubscriberMilestoneThreshold(
+          result.subscriberCount,
+        );
+        if (threshold === null) {
+          setMilestoneTitle(
+            lang === "en"
+              ? milestoneEarlySupporterEn()
+              : milestoneEarlySupporterMl(),
+          );
+          return;
+        }
+        setMilestoneTitle(
+          lang === "en"
+            ? milestoneThanksTitleEn(threshold)
+            : milestoneThanksTitleMl(threshold),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMilestoneTitle(
+            lang === "en" ? milestoneUnavailableEn() : milestoneUnavailableMl(),
+          );
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [lang]);
 
   return (
     <section className="announcement-section">
